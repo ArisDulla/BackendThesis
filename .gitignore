@@ -2,3 +2,6 @@
 passportBackend/__pycache__/
 polls/__pycache__/
 polls/migrations/__pycache__/
+polls/testsAll/__pycache__/
+polls/viewsAll/__pycache__/
+polls/serializers/__pycache__/
