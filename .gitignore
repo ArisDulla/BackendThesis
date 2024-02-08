@@ -1,2 +1,4 @@
 .env
 passportBackend/__pycache__/
+polls/__pycache__/
+polls/migrations/__pycache__/
