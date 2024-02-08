@@ -8,8 +8,11 @@ class Address(models.Model):
    prefecture_name = models.CharField(max_length=100)
    postal_code = models.CharField(max_length=20)
 
+   class Meta:
+        unique_together = ['street', 'street_number', 'region_name', 'prefecture_name', 'postal_code']
+
 class PhoneNumber(models.Model):
-   number = models.CharField(max_length=20)
+   number = models.CharField(max_length=20, unique=True)
    STATUS_CHOICES = [
        ('active', 'Active'),
        ('inactive', 'Inactive'),
