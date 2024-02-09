@@ -5,10 +5,11 @@ from ..serializers.s1_AddressSerializer import AddressSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 
+
 class AddressViewSet(viewsets.ModelViewSet):
     queryset = Address.objects.all()
     serializer_class = AddressSerializer
-    format_kwarg = None 
+    format_kwarg = None
     permission_classes = [IsAdminUser]
 
     def initial(self, request, *args, **kwargs):
@@ -22,7 +23,7 @@ class AddressViewSet(viewsets.ModelViewSet):
         """
         Return a list of all addresses.
         """
-        
+
         queryset = self.get_queryset()
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
