@@ -19,9 +19,11 @@ from django.contrib import admin
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from polls.viewsAll.v1_AddressViewSet import AddressViewSet
+from polls.viewsAll.v2_PhoneNumberViewSet import PhoneNumberViewSet
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="user")
+router.register(r"phoneNumber", AddressViewSet, basename="user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
