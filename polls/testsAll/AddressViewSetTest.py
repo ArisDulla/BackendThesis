@@ -55,7 +55,7 @@ class AddressViewSetTest(TestCase):
         # Assert response status code and address update
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         address.refresh_from_db()
-        self.assertEqual(address.street, "12321alllka")
+        self.assertEqual(address.street, "12321ALLLKA")
 
     # DELETE METHOD
     def test_delete_address(self):

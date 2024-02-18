@@ -30,15 +30,15 @@ class AddressSerializer(serializers.ModelSerializer):
         return Address.objects.create(**validated_data)
 
     def update(self, instance, validated_data):
-        instance.street = validated_data.get("street", instance.street)
+        instance.street = validated_data.get("street", instance.street).upper()
         instance.street_number = validated_data.get(
             "street_number", instance.street_number
-        )
-        instance.region_name = validated_data.get("region_name", instance.region_name)
+        ).upper()
+        instance.region_name = validated_data.get("region_name", instance.region_name).upper()
         instance.prefecture_name = validated_data.get(
             "prefecture_name", instance.prefecture_name
-        )
-        instance.postal_code = validated_data.get("postal_code", instance.postal_code)
+        ).upper()
+        instance.postal_code = validated_data.get("postal_code", instance.postal_code).upper()
         instance.save()
         return instance
 
