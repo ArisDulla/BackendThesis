@@ -20,10 +20,14 @@ from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from polls.viewsAll.v1_AddressViewSet import AddressViewSet
 from polls.viewsAll.v2_PhoneNumberViewSet import PhoneNumberViewSet
+from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
+
+
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="user")
 router.register(r"phoneNumber", AddressViewSet, basename="user")
+router.register(r"departments", DepartmentViewSet, basename="user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
