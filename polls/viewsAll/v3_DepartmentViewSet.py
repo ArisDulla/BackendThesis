@@ -4,9 +4,9 @@ from ..models import Department, Address
 from ..serializers.s3_DepartmentSerializer import DepartmentSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
-from ..processors.address import AddressProcessor
+from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
-from ..processors.phoneNumber import PhoneNumberProcessor
+from ..processors.phoneNumberProcessor import PhoneNumberProcessor
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
