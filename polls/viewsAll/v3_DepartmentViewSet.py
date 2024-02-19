@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
-from ..processors.phoneNumberProcessor import PhoneNumberProcessor
+from ..processors.addressAndPhone import DepartmentCreationProcessor
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -34,55 +34,14 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Create a new Department.
         """
-        #######################################################################
-        #
-        # Address Data
-        #
-        address_data = request.data["address"]
-        #
-        # Create an instance of Address Processor
-        #
-        address_processor = AddressProcessor()
-        #
-        # Check if an address with the given data already exists OR create new AND RETURN ID OF ADDRESS
-        #
-        try:
-            address_id = address_processor._verify_unique_address(address_data)
-        except ValidationError as e:
-            raise e
-        #
-        # set id here
-        #
-        request.data["address"] = address_id
-        #######################################################################
-        #
-        # Phone Number Data
-        #
-        phone_number_data = request.data["phone_number"]
-        #
-        # Create an instance of Phone Number Processor
-        #
-        phone_number_processor = PhoneNumberProcessor()
-        #
-        # Check if an phone number with the given data already exists OR create new AND RETURN ID OF phone number
-        #
-        try:
-            phone_number_id = phone_number_processor._verify_unique_phone_number(
-                phone_number_data
-            )
-        except ValidationError as e:
-            raise e
-        #
-        # set id here
-        #
-        request.data["phone_number"] = phone_number_id
+        processor = DepartmentCreationProcessor()
 
-        # print(request.data)
-        #######################################################################
-        """
-        Create a new Department.
-        """
-        serializer = self.get_serializer(data=request.data)
+        try:
+            processed_data = processor.process_creation_data(request.data)
+        except ValidationError as e:
+            raise e
+
+        serializer = self.get_serializer(data=processed_data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(serializer.data, status=status.HTTP_201_CREATED)
@@ -99,53 +58,15 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Update an existing Department.
         """
-        #######################################################################
-        #
-        # Address Data
-        #
-        address_data = request.data["address"]
-        #
-        # Create an instance of Address Processor
-        #
-        address_processor = AddressProcessor()
-        #
-        # Check if an address with the given data already exists OR create new AND RETURN ID OF ADDRESS
-        #
-        try:
-            address_id = address_processor._verify_unique_address(address_data)
-        except ValidationError as e:
-            raise e
-        #
-        # set id here
-        #
-        request.data["address"] = address_id
-        #######################################################################
-        #
-        # Phone Number Data
-        #
-        phone_number_data = request.data["phone_number"]
-        #
-        # Create an instance of Phone Number Processor
-        #
-        phone_number_processor = PhoneNumberProcessor()
-        #
-        # Check if an phone number with the given data already exists OR create new AND RETURN ID OF phone number
-        #
-        try:
-            phone_number_id = phone_number_processor._verify_unique_phone_number(
-                phone_number_data
-            )
-        except ValidationError as e:
-            raise e
-        #
-        # set id here
-        #
-        request.data["phone_number"] = phone_number_id
+        processor = DepartmentCreationProcessor()
 
-        # print(request.data)
+        try:
+            processed_data = processor.process_creation_data(request.data)
+        except ValidationError as e:
+            raise e
 
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=processed_data)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)
