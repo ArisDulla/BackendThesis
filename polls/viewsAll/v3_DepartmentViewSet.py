@@ -76,8 +76,8 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         # set id here
         #
         request.data["phone_number"] = phone_number_id
-        
-        #print(request.data)
+
+        # print(request.data)
         #######################################################################
         """
         Create a new Department.
@@ -99,6 +99,51 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Update an existing Department.
         """
+        #######################################################################
+        #
+        # Address Data
+        #
+        address_data = request.data["address"]
+        #
+        # Create an instance of Address Processor
+        #
+        address_processor = AddressProcessor()
+        #
+        # Check if an address with the given data already exists OR create new AND RETURN ID OF ADDRESS
+        #
+        try:
+            address_id = address_processor._verify_unique_address(address_data)
+        except ValidationError as e:
+            raise e
+        #
+        # set id here
+        #
+        request.data["address"] = address_id
+        #######################################################################
+        #
+        # Phone Number Data
+        #
+        phone_number_data = request.data["phone_number"]
+        #
+        # Create an instance of Phone Number Processor
+        #
+        phone_number_processor = PhoneNumberProcessor()
+        #
+        # Check if an phone number with the given data already exists OR create new AND RETURN ID OF phone number
+        #
+        try:
+            phone_number_id = phone_number_processor._verify_unique_phone_number(
+                phone_number_data
+            )
+        except ValidationError as e:
+            raise e
+        #
+        # set id here
+        #
+        request.data["phone_number"] = phone_number_id
+
+        # print(request.data)
+
         instance = self.get_object()
         serializer = self.get_serializer(instance, data=request.data)
         serializer.is_valid(raise_exception=True)
