@@ -46,7 +46,7 @@ class AddressSerializer(serializers.ModelSerializer):
         """
         Validate the street field.
         """
-        return self.validate_address_field(value, "street")
+        return self.validate_street_name_field(value, "street")
 
     def validate_street_number(self, value):
         """
@@ -103,6 +103,24 @@ class AddressSerializer(serializers.ModelSerializer):
         if not re.match(r"^[a-zA-Z\s]+$", value):
             raise serializers.ValidationError(
                 f"The {field_name} must contain only English characters."
+            )
+
+        return value
+
+    def validate_street_name_field(self, value, field_name):
+        """
+        Validate an street field.
+        """
+        # Ensure that the value is not empty
+        if not value:
+            raise serializers.ValidationError(
+                f"The {field_name} value cannot be empty."
+            )
+
+        # Validate the format using a regular expression
+        if not re.match(r"^\d*[a-zA-Z][a-zA-Z\d]*$", value):
+            raise serializers.ValidationError(
+                f"The {field_name} must start with a number or English letters followed by none or more English letters and should not contain spaces."
             )
 
         return value

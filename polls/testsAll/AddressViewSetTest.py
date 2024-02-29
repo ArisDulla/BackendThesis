@@ -13,7 +13,7 @@ class AddressViewSetTest(TestCase):
             {"get": "list", "post": "create", "put": "update", "delete": "destroy"}
         )
         self.address_data = {
-            "street": "1",
+            "street": "aaa11",
             "street_number": "1",
             "region_name": "Region",
             "prefecture_name": "Prefecture",
@@ -29,7 +29,7 @@ class AddressViewSetTest(TestCase):
 
         # Assert response status code and address creation
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
-        self.assertEqual(Address.objects.last().street, "1")
+        self.assertEqual(Address.objects.last().street, "AAA11")
 
     # PUT METHOD
     def test_update_address(self):
