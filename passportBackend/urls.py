@@ -21,13 +21,15 @@ from rest_framework.routers import DefaultRouter
 from polls.viewsAll.v1_AddressViewSet import AddressViewSet
 from polls.viewsAll.v2_PhoneNumberViewSet import PhoneNumberViewSet
 from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
+from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
 
 
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="user")
-router.register(r"phoneNumber", AddressViewSet, basename="user")
+router.register(r"phoneNumber", PhoneNumberViewSet, basename="user")
 router.register(r"departments", DepartmentViewSet, basename="user")
+router.register(r"users", CustomUserViewSet, basename="user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),
