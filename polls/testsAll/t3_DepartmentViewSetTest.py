@@ -5,6 +5,8 @@ from polls.models import Department, Address, PhoneNumber
 from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
 from django.urls import reverse
 from rest_framework.test import APITestCase
+from rest_framework.test import APIClient
+from django.contrib.auth import get_user_model
 
 
 class DepartmentViewSetTests(APITestCase):
@@ -24,6 +26,12 @@ class DepartmentViewSetTests(APITestCase):
             "number": "6988432143",
             "status": "active",
         }
+        self.admin_user = get_user_model().objects.create_superuser(
+            username="superuser", email="superuser@email.com", password="pass"
+        )
+
+        self.client = APIClient()  # Create APIClient instance
+        self.client.force_authenticate(user=self.admin_user)
 
     def test_create_department(self):
 
@@ -53,6 +61,7 @@ class DepartmentViewSetTests(APITestCase):
         }
 
         request = self.factory.post("/departments/", department_data, format="json")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
         # Assert response status code and address creation
@@ -108,6 +117,7 @@ class DepartmentViewSetTests(APITestCase):
         request = self.factory.put(
             f"/phoneNumber/{departmentx.id}/", updated_department_data, format="json"
         )
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=departmentx.id)
 
         # Assert response status code and address update
