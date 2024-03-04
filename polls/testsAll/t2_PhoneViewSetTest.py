@@ -3,7 +3,8 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 from rest_framework import status
 from polls.models import PhoneNumber
 from polls.viewsAll.v2_PhoneNumberViewSet import PhoneNumberViewSet
-
+from django.contrib.auth import get_user_model
+from rest_framework.test import APIClient
 
 # run test  python manage.py test polls.testsAll.PhoneViewSetTest
 class PhoneNumberViewSetTest(TestCase):
@@ -17,12 +18,20 @@ class PhoneNumberViewSetTest(TestCase):
             "number": "6988433421",
             "status": "active",
         }
+        
+        self.admin_user = get_user_model().objects.create_superuser(
+            username="superuser", email="superuser@email.com", password="pass"
+        )
+
+        self.client = APIClient()  # Create APIClient instance
+        self.client.force_authenticate(user=self.admin_user)
 
     # POST METHOD
     def test_create_phone_number(self):
 
         # Simulate POST request to create an phone_number
         request = self.factory.post("/phoneNumber/", self.phone_number_data)
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
         # Assert response status code and phone_number creation
@@ -44,6 +53,7 @@ class PhoneNumberViewSetTest(TestCase):
         request = self.factory.put(
             f"/phoneNumber/{phoneNumber.id}/", updated_phoneNumber_data
         )
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=phoneNumber.id)
 
         # Assert response status code and phoneNumber update
@@ -61,6 +71,7 @@ class PhoneNumberViewSetTest(TestCase):
 
         # Simulate DELETE request to delete the phoneNumber
         request = self.factory.delete(f"/phoneNumber/{phoneNumber.id}/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=phoneNumber.id)
 
         # Assert response status code and phoneNumber deletion
@@ -77,6 +88,7 @@ class PhoneNumberViewSetTest(TestCase):
 
         # Simulate GET request to retrieve the phoneNumber
         request = self.factory.get(f"/phoneNumber/{phoneNumber.id}/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=phoneNumber.id)
 
         # Assert response status code and phoneNumber retrieval
@@ -100,11 +112,13 @@ class PhoneNumberViewSetTest(TestCase):
         # Simulate POST requests to create phoneNumber
         for data in phoneNumber_data:
             request = self.factory.post("/phoneNumber/", data)
+            force_authenticate(request, user=self.admin_user)
             response = self.view(request)
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Simulate GET request to retrieve all phoneNumber
         request = self.factory.get("/phoneNumber/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
         # Assert response status code and phoneNumber retrieval
