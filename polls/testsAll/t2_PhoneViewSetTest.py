@@ -14,6 +14,8 @@ class PhoneNumberViewSetTest(TestCase):
         self.view = PhoneNumberViewSet.as_view(
             {"get": "list", "post": "create", "put": "update", "delete": "destroy"}
         )
+        self.retrieve_view = PhoneNumberViewSet.as_view({"get": "retrieve"})
+
         self.phone_number_data = {
             "number": "6988433421",
             "status": "active",
@@ -89,11 +91,11 @@ class PhoneNumberViewSetTest(TestCase):
         # Simulate GET request to retrieve the phoneNumber
         request = self.factory.get(f"/phoneNumber/{phoneNumber.id}/")
         force_authenticate(request, user=self.admin_user)
-        response = self.view(request, pk=phoneNumber.id)
+        response = self.retrieve_view(request, pk=phoneNumber.id)
 
         # Assert response status code and phoneNumber retrieval
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["number"], "6988433492")
+        self.assertEqual(response.data["number"], "6988433492")
 
     # GET ALL phone_number
     def test_retrieve_all_phone_number(self):
