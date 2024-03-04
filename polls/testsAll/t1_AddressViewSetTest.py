@@ -3,7 +3,8 @@ from rest_framework.test import APIRequestFactory, force_authenticate
 from rest_framework import status
 from polls.models import Address
 from polls.viewsAll.v1_AddressViewSet import AddressViewSet
-
+from django.contrib.auth import get_user_model
+from rest_framework.test import APIClient
 
 class AddressViewSetTest(TestCase):
 
@@ -19,12 +20,20 @@ class AddressViewSetTest(TestCase):
             "prefecture_name": "Prefecture",
             "postal_code": "12345",
         }
+        
+        self.admin_user = get_user_model().objects.create_superuser(
+            username="superuser", email="superuser@email.com", password="pass"
+        )
+        self.client = APIClient()  # Create APIClient instance
+        self.client.force_authenticate(user=self.admin_user)
+        
 
     # POST METHOD
     def test_create_address(self):
 
         # Simulate POST request to create an address
         request = self.factory.post("/addresses/", self.address_data)
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
         # Assert response status code and address creation
@@ -50,6 +59,7 @@ class AddressViewSetTest(TestCase):
             "postal_code": "67890",
         }
         request = self.factory.put(f"/addresses/{address.id}/", updated_address_data)
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=address.id)
 
         # Assert response status code and address update
@@ -70,6 +80,7 @@ class AddressViewSetTest(TestCase):
 
         # Simulate DELETE request to delete the address
         request = self.factory.delete(f"/addresses/{address.id}/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=address.id)
 
         # Assert response status code and address deletion
@@ -89,6 +100,7 @@ class AddressViewSetTest(TestCase):
 
         # Simulate GET request to retrieve the address
         request = self.factory.get(f"/addresses/{address.id}/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request, pk=address.id)
 
         # Assert response status code and address retrieval
@@ -118,11 +130,13 @@ class AddressViewSetTest(TestCase):
         # Simulate POST requests to create addresses
         for data in address_data:
             request = self.factory.post("/addresses/", data)
+            force_authenticate(request, user=self.admin_user)
             response = self.view(request)
             self.assertEqual(response.status_code, status.HTTP_201_CREATED)
 
         # Simulate GET request to retrieve all addresses
         request = self.factory.get("/addresses/")
+        force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
         # Assert response status code and address retrieval
