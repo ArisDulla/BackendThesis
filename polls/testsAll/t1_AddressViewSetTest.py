@@ -13,6 +13,8 @@ class AddressViewSetTest(TestCase):
         self.view = AddressViewSet.as_view(
             {"get": "list", "post": "create", "put": "update", "delete": "destroy"}
         )
+        self.retrieve_view = AddressViewSet.as_view({"get": "retrieve"})
+        
         self.address_data = {
             "street": "aaa11",
             "street_number": "1",
@@ -101,11 +103,11 @@ class AddressViewSetTest(TestCase):
         # Simulate GET request to retrieve the address
         request = self.factory.get(f"/addresses/{address.id}/")
         force_authenticate(request, user=self.admin_user)
-        response = self.view(request, pk=address.id)
+        response = self.retrieve_view(request, pk=address.id) 
 
         # Assert response status code and address retrieval
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertEqual(response.data[0]["street"], "456ElmSt")
+        self.assertEqual(response.data["street"], "456ElmSt")
 
     # GET ALL ADDRESS
     def test_retrieve_all_addresses(self):
