@@ -19,10 +19,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Create a new Department.
         """
-        processor = DepartmentCreationProcessor()
+        _processor = DepartmentCreationProcessor()
 
         try:
-            processed_data = processor.process_creation_data(request.data)
+            processed_data = _processor.process_creation_data(request.data)
         except ValidationError as e:
             raise e
 
@@ -35,10 +35,10 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Update an existing Department.
         """
-        processor = DepartmentCreationProcessor()
+        _processor = DepartmentCreationProcessor()
 
         try:
-            processed_data = processor.process_creation_data(request.data)
+            processed_data = _processor.process_creation_data(request.data)
         except ValidationError as e:
             raise e
 
