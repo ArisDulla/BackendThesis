@@ -22,7 +22,7 @@ from polls.viewsAll.v1_AddressViewSet import AddressViewSet
 from polls.viewsAll.v2_PhoneNumberViewSet import PhoneNumberViewSet
 from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
 from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
-
+from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 
 
 router = DefaultRouter()
@@ -30,6 +30,7 @@ router.register(r"address", AddressViewSet, basename="user")
 router.register(r"phoneNumber", PhoneNumberViewSet, basename="user")
 router.register(r"departments", DepartmentViewSet, basename="user")
 router.register(r"users", CustomUserViewSet, basename="user")
+router.register(r"employees", EmployeeViewSet, basename="user")
 
 urlpatterns = [
     path("admin/", admin.site.urls),

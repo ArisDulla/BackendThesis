@@ -6,7 +6,7 @@ from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
-from ..processors.addressAndPhone import DepartmentCreationProcessor
+from ..processors.addressAndPhone import AddressAndPhoneProcessor
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -19,7 +19,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Create a new Department.
         """
-        _processor = DepartmentCreationProcessor()
+        _processor = AddressAndPhoneProcessor()
 
         try:
             processed_data = _processor.process_creation_data(request.data)
@@ -35,7 +35,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         Update an existing Department.
         """
-        _processor = DepartmentCreationProcessor()
+        _processor = AddressAndPhoneProcessor()
 
         try:
             processed_data = _processor.process_creation_data(request.data)
