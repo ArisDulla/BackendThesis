@@ -21,6 +21,7 @@ class CityzensViewSetTest(TestCase):
         self.view = CityzensViewSet.as_view(
             {"get": "list", "post": "create", "put": "update", "delete": "destroy"}
         )
+        self.retrieve_view = CityzensViewSet.as_view({"get": "retrieve"})
 
         self.address = Address.objects.create(
             street="456ElmSt",
@@ -62,6 +63,67 @@ class CityzensViewSetTest(TestCase):
         self.client = APIClient()  # Create APIClient instance
         # self.client.force_authenticate(user=self.admin_user)
 
+        ######################################
+        # CustomUser
+        #
+        #
+        user = CustomUser.objects.create(
+            username="testuser898",
+            password="testpassword",
+            email="test@example.com",
+            first_name="Test",
+            last_name="User",
+            is_superuser=False,
+            is_staff=False,
+            is_active=True,
+            date_joined="2024-02-29T00:00:00Z",
+            last_login="2024-02-29T00:00:00Z",
+            address=self.address_instance,
+            phone_number=self.phone_number_instance,
+        )
+
+        customUser = CustomUser.objects.get(id=user.id)
+
+        cityzens_data = {
+            "user": customUser,
+        }
+        # create exist Citizen
+        self.existsCityzens = Cityzens.objects.create(**cityzens_data)
+
+        user = CustomUser.objects.create(
+            username="testuser12321898",
+            password="testpassword",
+            email="test@example.com",
+            first_name="Test",
+            last_name="User",
+            is_superuser=False,
+            is_staff=False,
+            is_active=True,
+            date_joined="2024-02-29T00:00:00Z",
+            last_login="2024-02-29T00:00:00Z",
+            address=self.address_instance,
+            phone_number=self.phone_number_instance,
+        )
+
+        customUser = CustomUser.objects.get(id=user.id)
+
+        cityzens_data = {
+            "user": customUser,
+        }
+        # create exist Citizen
+        self.existsCityzens22 = Cityzens.objects.create(**cityzens_data)
+
+    # GET ALL phone_number
+    def test_retrieve_all_phone_number(self):
+        # Simulate GET request to retrieve all phoneNumber
+        request = self.factory.get("/cityzens/")
+        force_authenticate(request, user=self.admin_user)
+        # force_authenticate(request, user=self.existsCityzens.user)
+
+        response = self.view(request)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
     # POST METHOD
     def test_create_user(self):
 
@@ -94,46 +156,23 @@ class CityzensViewSetTest(TestCase):
             "address": address_data,
             "phone_number": number_data,
         }
-
         cityzens_data = {
             "user": user_data,
         }
 
         request = self.factory.post("/cityzens/", cityzens_data, format="json")
+        # force_authenticate(request, user=self.admin_user)
 
         response = self.view(request)
+        response.render()
+
+        # print("Response Content:", response.content)
 
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Cityzens.objects.last().user.username, "testuser898213")
 
     # PUT METHOD
     def test_update_user(self):
-        ######################################
-        # CustomUser
-        #
-        #
-        user = CustomUser.objects.create(
-            username="testuser898",
-            password="testpassword",
-            email="test@example.com",
-            first_name="Test",
-            last_name="User",
-            is_superuser=False,
-            is_staff=False,
-            is_active=True,
-            date_joined="2024-02-29T00:00:00Z",
-            last_login="2024-02-29T00:00:00Z",
-            address=self.address_instance,
-            phone_number=self.phone_number_instance,
-        )
-
-        customUser = CustomUser.objects.get(id=user.id)
-
-        cityzens_data = {
-            "user": customUser,
-        }
-        # create exist Citizen
-        existsCityzens = Cityzens.objects.create(**cityzens_data)
 
         #
         # UPDATEDD DATA
@@ -175,15 +214,47 @@ class CityzensViewSetTest(TestCase):
         }
 
         request = self.factory.put(
-            f"/cityzens/{existsCityzens.id}/", updated_cityzens_data, format="json"
+            f"/cityzens/{self.existsCityzens.id}/", updated_cityzens_data, format="json"
         )
 
-        response = self.view(request, pk=existsCityzens.id)
+        force_authenticate(request, user=self.existsCityzens.user)
+        # force_authenticate(request, user=self.existsCityzens22.user)
+        # force_authenticate(request, user=self.admin_user)
+
+        response = self.view(request, pk=self.existsCityzens.id)
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        existsCityzens.refresh_from_db()
+        self.existsCityzens.refresh_from_db()
 
-        self.assertEqual(existsCityzens.user.username, "arisdulla")
-        self.assertEqual(existsCityzens.user.email, "it2194@hua.gr")
-        self.assertEqual(existsCityzens.user.address.street, "ATHINAS13")
-        self.assertEqual(existsCityzens.user.phone_number.number, "6988432143")
+        self.assertEqual(self.existsCityzens.user.username, "arisdulla")
+        self.assertEqual(self.existsCityzens.user.email, "it2194@hua.gr")
+        self.assertEqual(self.existsCityzens.user.address.street, "ATHINAS13")
+        self.assertEqual(self.existsCityzens.user.phone_number.number, "6988432143")
+
+    # GET METHOD
+    def test_retrieve_user(self):
+
+        request = self.factory.get(f"/cityzens/")
+
+        force_authenticate(request, user=self.existsCityzens.user)
+        # force_authenticate(request, user=self.existsCityzens22.user)
+        # force_authenticate(request, user=self.admin_user)
+
+        response = self.retrieve_view(request, pk=self.existsCityzens.id)
+
+        # Assert response status code and user retrieval
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+
+    # DELETE METHOD
+    def test_delete_user(self):
+
+        request = self.factory.delete(f"/cityzens/{self.existsCityzens.id}/")
+
+        # force_authenticate(request, user=self.existsCityzens.user)
+        # force_authenticate(request, user=self.existsCityzens22.user)
+        force_authenticate(request, user=self.admin_user)
+
+        response = self.view(request, pk=self.existsCityzens.id)
+
+        # Assert response status code and user deletion
+        self.assertEqual(response.status_code, status.HTTP_204_NO_CONTENT)

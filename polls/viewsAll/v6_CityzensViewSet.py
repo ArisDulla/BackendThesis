@@ -7,11 +7,25 @@ from rest_framework.serializers import ValidationError
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
+from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
+from ..permissions.isNotAuthenticated import IsNotAuthenticated
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
+
+    def get_permissions(self):
+        if self.action == "create":
+            permission_classes = [IsNotAuthenticated]
+
+        elif self.action == "list" or self.action == "destroy":
+            permission_classes = [IsAdminUser]
+
+        else:
+            permission_classes = [IsAdminOrIsSelf]
+
+        return [permission() for permission in permission_classes]
 
     def create(self, request, *args, **kwargs):
         """
