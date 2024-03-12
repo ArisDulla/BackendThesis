@@ -4,6 +4,7 @@ from ..models import Address
 from ..serializers.s1_AddressSerializer import AddressSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
+from rest_framework.authentication import TokenAuthentication
 
 
 class AddressViewSet(viewsets.ModelViewSet):
@@ -11,3 +12,4 @@ class AddressViewSet(viewsets.ModelViewSet):
     serializer_class = AddressSerializer
     format_kwarg = None
     permission_classes = [IsAdminUser]
+    authentication_classes = [TokenAuthentication]

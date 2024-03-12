@@ -8,12 +8,14 @@ from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
 from ..models import CustomUser
+from rest_framework.authentication import TokenAuthentication
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAdminUser]
+    authentication_classes = [TokenAuthentication]
 
     def create(self, request, *args, **kwargs):
         """
@@ -36,16 +38,19 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         _customUserProcessor = CustomUserProcessor()
 
         try:
-            user_id = _customUserProcessor._create_custom_user(custom_user_data)
+            user_array = _customUserProcessor._create_custom_user(custom_user_data)
         except ValidationError as e:
             raise e
 
-        request.data["user"] = user_id
+        request.data["user"] = user_array["user_id"]
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(
+            {"data": serializer.data, "token": user_array["token"]},
+            status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
         """

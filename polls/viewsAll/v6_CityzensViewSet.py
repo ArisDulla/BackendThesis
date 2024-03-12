@@ -9,11 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
 from ..permissions.isNotAuthenticated import IsNotAuthenticated
+from rest_framework.authentication import TokenAuthentication
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
+    authentication_classes = [TokenAuthentication]
 
     def get_permissions(self):
         if self.action == "create":
@@ -48,16 +50,20 @@ class CityzensViewSet(viewsets.ModelViewSet):
         _customUserProcessor = CustomUserProcessor()
 
         try:
-            user_id = _customUserProcessor._create_custom_user(custom_user_data)
+            user_array = _customUserProcessor._create_custom_user(custom_user_data)
         except ValidationError as e:
             raise e
 
-        request.data["user"] = user_id
+        request.data["user"] = user_array["user_id"]
 
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+        return Response(
+            {"data": serializer.data, "token": user_array["token"]},
+            status=status.HTTP_201_CREATED,
+        )
 
     def update(self, request, *args, **kwargs):
         """
