@@ -1,7 +1,5 @@
 from ..serializers.s4_CustomUserSerializer import CustomUserSerializer
 from rest_framework.serializers import ValidationError
-from ..models import CustomUser
-from rest_framework.authtoken.models import Token
 
 
 class CustomUserProcessor:
@@ -18,10 +16,7 @@ class CustomUserProcessor:
 
                 custom_user_id = serializer.instance.id
 
-                user = serializer.instance
-                token, created = Token.objects.get_or_create(user=user)
-
-                return {"token": token.key, "user_id": custom_user_id}
+                return {"user_id": custom_user_id}
 
             else:
                 # Raise a validation error if the serializer is not valid

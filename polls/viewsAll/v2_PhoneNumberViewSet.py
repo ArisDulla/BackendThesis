@@ -4,7 +4,6 @@ from ..models import PhoneNumber
 from ..serializers.s2_PhoneNumberSerializer import PhoneNumberSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
-from rest_framework.authentication import TokenAuthentication
 
 
 class PhoneNumberViewSet(viewsets.ModelViewSet):
@@ -12,4 +11,3 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
     serializer_class = PhoneNumberSerializer
     format_kwarg = None
     permission_classes = [IsAdminUser]
-    authentication_classes = [TokenAuthentication]

@@ -24,7 +24,6 @@ from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
 from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
 from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 from polls.viewsAll.v6_CityzensViewSet import CityzensViewSet
-from rest_framework.authtoken import views
 
 
 router = DefaultRouter()
@@ -38,5 +37,4 @@ router.register(r"cityzens", CityzensViewSet, basename="user")
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    path("api-token-auth/", views.obtain_auth_token),
 ]

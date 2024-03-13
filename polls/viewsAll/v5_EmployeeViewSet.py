@@ -8,14 +8,12 @@ from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
 from ..models import CustomUser
-from rest_framework.authentication import TokenAuthentication
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
     queryset = Employee.objects.all()
     serializer_class = EmployeeSerializer
     permission_classes = [IsAdminUser]
-    authentication_classes = [TokenAuthentication]
 
     def create(self, request, *args, **kwargs):
         """
@@ -48,7 +46,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_create(serializer)
         return Response(
-            {"data": serializer.data, "token": user_array["token"]},
+            {"data": serializer.data},
             status=status.HTTP_201_CREATED,
         )
 

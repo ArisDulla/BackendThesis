@@ -9,13 +9,11 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
 from ..permissions.isNotAuthenticated import IsNotAuthenticated
-from rest_framework.authentication import TokenAuthentication
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
-    authentication_classes = [TokenAuthentication]
 
     def get_permissions(self):
         if self.action == "create":
@@ -61,7 +59,7 @@ class CityzensViewSet(viewsets.ModelViewSet):
         self.perform_create(serializer)
 
         return Response(
-            {"data": serializer.data, "token": user_array["token"]},
+            {"data": serializer.data},
             status=status.HTTP_201_CREATED,
         )
 

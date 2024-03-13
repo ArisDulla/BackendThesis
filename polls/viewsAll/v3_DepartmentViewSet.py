@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAdminUser
 from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
-from rest_framework.authentication import TokenAuthentication
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -15,7 +14,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     format_kwarg = None
     permission_classes = [IsAdminUser]
-    authentication_classes = [TokenAuthentication]
 
     def create(self, request, *args, **kwargs):
         """
