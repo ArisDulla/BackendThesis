@@ -9,11 +9,13 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
 from ..permissions.isNotAuthenticated import IsNotAuthenticated
+from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
+    authentication_classes = [OAuth2Authentication]
 
     def get_permissions(self):
         if self.action == "create":
@@ -54,9 +56,13 @@ class CityzensViewSet(viewsets.ModelViewSet):
 
         request.data["user"] = user_array["user_id"]
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+
+        except Exception as e:
+            user_array["instance"].delete()
 
         return Response(
             {"data": serializer.data},

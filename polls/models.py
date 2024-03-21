@@ -66,3 +66,16 @@ class Employee(models.Model):
 
 class Cityzens(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+
+    def save(self, *args, **kwargs):
+
+        # Modify attributes of the related CustomUser instance
+        self.user.is_superuser = False
+        self.user.is_staff = False
+        self.user.is_active = True
+        self.user.groups.clear()
+        self.user.user_permissions.clear()
+
+        self.user.save()
+
+        super().save(*args, **kwargs)

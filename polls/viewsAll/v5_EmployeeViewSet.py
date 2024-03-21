@@ -7,7 +7,6 @@ from rest_framework import status
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
-from ..models import CustomUser
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -42,9 +41,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
         request.data["user"] = user_array["user_id"]
 
-        serializer = self.get_serializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        self.perform_create(serializer)
+        try:
+            serializer = self.get_serializer(data=request.data)
+            serializer.is_valid(raise_exception=True)
+            self.perform_create(serializer)
+
+        except Exception as e:
+            user_array["instance"].delete()
+
         return Response(
             {"data": serializer.data},
             status=status.HTTP_201_CREATED,
