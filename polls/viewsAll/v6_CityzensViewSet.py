@@ -8,7 +8,6 @@ from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
 from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
-from ..permissions.isNotAuthenticated import IsNotAuthenticated
 from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 
@@ -18,18 +17,25 @@ class CityzensViewSet(viewsets.ModelViewSet):
     authentication_classes = [OAuth2Authentication]
 
     def get_permissions(self):
-        if self.action == "create":
-            permission_classes = [IsNotAuthenticated]
-
-        elif self.action == "list" or self.action == "destroy":
-            permission_classes = [IsAdminUser]
+        #
+        # The process of creating a citizen is done through the Signal (user_activated) after successful user activation.
+        #
+        if self.action == "update":
+            permission_classes = [IsAdminOrIsSelf]
 
         else:
-            permission_classes = [IsAdminOrIsSelf]
+            permission_classes = [IsAdminUser]
 
         return [permission() for permission in permission_classes]
 
-    def create(self, request, *args, **kwargs):
+    #
+    # The function create() is not used because
+    #
+    # The process of creating a citizen is done through the Signal (user_activated) after successful user activation.
+    #
+    # NOT USED
+    #
+    def create(self, request, *args, **kwargs):  # NOT USED
         """
         Create a new Cityzen.
         """

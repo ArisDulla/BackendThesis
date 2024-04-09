@@ -26,6 +26,7 @@ from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 from polls.viewsAll.v6_CityzensViewSet import CityzensViewSet
 from polls.viewsAll.v0_Google_Oauth2 import GoogleAuthRedirect, GoogleRedirectURIView
 
+
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="address")
 router.register(r"phoneNumber", PhoneNumberViewSet, basename="phoneNumber")
@@ -46,4 +47,10 @@ urlpatterns = [
     #
     path("google-login-signup/", GoogleAuthRedirect.as_view()),
     path("google-redirect/", GoogleRedirectURIView.as_view(), name="google_redirect"),
+    #
+    # Djoser and Simple JWT
+    #
+    path("auth/", include("djoser.urls")),
+    path("auth/", include("djoser.urls.jwt")),  # JWT’s
+    path("auth/", include("djoser.urls.authtoken")),
 ]
