@@ -211,9 +211,9 @@ DJOSER = {
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
     "SERIALIZERS": {
-        "user_create": "polls.serializers.s7_UserCreateSerializer.UserCreateSerializer",
-        "user": "polls.serializers.s7_UserCreateSerializer.UserCreateSerializer",
-        "current_user": "polls.serializers.s7_UserCreateSerializer.UserCreateSerializer",
+        "user_create": "polls.serializers.s0_djoser.d0_UserCreateSerializer.UserCreateSerializer",
+        "user": "polls.serializers.s0_djoser.d0_UserCreateSerializer.UserCreateSerializer",
+        "current_user": "polls.serializers.s0_djoser.d0_UserCreateSerializer.UserCreateSerializer",
     },
 }
 

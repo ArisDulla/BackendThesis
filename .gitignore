@@ -9,3 +9,4 @@ polls/processors/__pycache__/
 polls/permissions/__pycache__/
 polls/testsAll/requestsToken/__pycache__/
 polls/signalsAll/__pycache__/
+polls/serializers/s0_djoser/__pycache__/
