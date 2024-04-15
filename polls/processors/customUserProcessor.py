@@ -1,13 +1,25 @@
 from ..serializers.s4_CustomUserSerializer import CustomUserSerializer
 from rest_framework.serializers import ValidationError
 from ..models import CustomUser
-
+import random
+import string
 
 class CustomUserProcessor:
 
     def _user_exists(self, email):
-        user = CustomUser.objects.filter(email=email).values("id").first()
-        return user["id"] if user else None
+        user = CustomUser.objects.filter(email=email).first()
+        
+        length = 12  # Set the desired length of the password
+        random_password = ''.join(random.choices(string.ascii_letters + string.digits, k=length))
+    
+        # Set the random password for the user
+        user.set_password(random_password)
+        user.save()
+        
+        #print("user.has_usable_password()")
+        #print(user.has_usable_password())
+        
+        return user.id if user else None
 
     def _create_custom_user(self, custom_user_data):
 
