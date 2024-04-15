@@ -7,7 +7,6 @@ from rest_framework.permissions import IsAdminUser
 from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
-from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -15,7 +14,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     format_kwarg = None
     permission_classes = [IsAdminUser]
-    authentication_classes = [OAuth2Authentication]
 
 
     def create(self, request, *args, **kwargs):

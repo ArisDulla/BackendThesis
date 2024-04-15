@@ -8,13 +8,11 @@ from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
 from ..permissions.isAdminOrIsSelf import IsAdminOrIsSelf
-from oauth2_provider.contrib.rest_framework import OAuth2Authentication
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
-    authentication_classes = [OAuth2Authentication]
 
     def get_permissions(self):
         #
