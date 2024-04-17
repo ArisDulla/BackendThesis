@@ -1,0 +1,53 @@
+from rest_framework import serializers
+from ...models import TheftOrLossPassportApplication
+from django.core.exceptions import ValidationError
+
+
+#
+# Theft Or Loss
+#
+#
+class TheftOrLossPassportSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = TheftOrLossPassportApplication
+        exclude = ["first_approval_by", "final_approval_by", "user"]
+        read_only_fields = ["status", "user"]
+
+    def validate_police_report(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError("Only PDF files are allowed for police report")
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Police report file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_id_card_copy(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError("Only PDF files are allowed for id card copy")
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Id card copy file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_payment_receipt(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError("Only PDF files are allowed for payment receipt")
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Payment receipt file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_applicant_photo(self, value):
+
+        # Check if the file size is greater than 1 MB (1048576 bytes)
+        max_size = 1048576  # 1 MB
+        if value.size > max_size:
+            raise ValidationError(("The maximum file size allowed is 1 MB."))
+
+        return value

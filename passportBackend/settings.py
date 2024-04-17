@@ -13,9 +13,11 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 from decouple import config
 from datetime import timedelta
+import os
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+MEDIA_ROOT = os.path.join(BASE_DIR, "uploads")
 
 
 # Quick-start development settings - unsuitable for production
@@ -231,7 +233,7 @@ EMAIL_USE_TLS = config("EMAIL_USE_TLS")
 
 SIMPLE_JWT = {
     "AUTH_HEADER_TYPES": ("JWT",),
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=5),
+    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=1115),
     "REFRESH_TOKEN_LIFETIME": timedelta(days=90),
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,

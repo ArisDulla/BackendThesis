@@ -79,3 +79,95 @@ class Cityzens(models.Model):
         self.user.save()
 
         super().save(*args, **kwargs)
+
+
+def user_directory_path(instance, filename):
+    return "user_{0}/{1}".format(instance.user.id, filename)
+
+
+#
+# PassportApplication
+#
+class PassportApplication(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    id_card_copy = models.FileField(upload_to=user_directory_path)
+    applicant_photo = models.ImageField(upload_to=user_directory_path)
+    payment_receipt = models.FileField(upload_to=user_directory_path)
+
+    status_choices = [
+        ("pending", "Pending"),
+        ("first_approval", "First Approval"),
+        ("final_approval", "Final Approval"),
+        ("rejected", "Rejected"),
+        ("cancelated", "Cancelated"),
+    ]
+    status = models.CharField(max_length=20, choices=status_choices, default="pending")
+
+    first_approval_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name="first_approvals",
+        null=True,
+        blank=True,
+    )
+    final_approval_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        related_name="final_approvals",
+        null=True,
+        blank=True,
+    )
+
+    submitted_at = models.DateTimeField(auto_now_add=True)
+
+
+#
+# Issuance Passport
+#
+class IssuancePassportApplication(PassportApplication):
+    #
+    # (( The same documents are submitted, as in case 1  Passport Application ))
+    #
+    application_form = models.FileField(upload_to=user_directory_path)
+
+
+#
+#  Renewal Passport
+#
+class RenewalPassportApplication(PassportApplication):
+    #
+    # (( The same documents are submitted, as in case 1  Passport Application ))
+    #
+    old_passport_pdf = models.FileField(upload_to=user_directory_path)
+
+
+#
+# Replacement Passport
+#
+class ReplacementPassportApplication(PassportApplication):
+    #
+    # (( The same documents are submitted, as in case 1  Passport Application ))
+    #
+    old_passport_pdf = models.FileField(upload_to=user_directory_path)
+
+
+#
+# Theft Or Loss Passport
+#
+class TheftOrLossPassportApplication(PassportApplication):
+    #
+    # (( The same documents are submitted, as in case 1  Passport Application ))
+    #
+    police_report = models.FileField(upload_to=user_directory_path)
+
+
+#
+# Issuance Passport for minors
+#
+class IssuanceMinorsPassportApplication(PassportApplication):
+    #
+    # (( The same documents are submitted, as in case 1  Passport Application ))
+    #
+    caregiver_address_certification = models.FileField(upload_to=user_directory_path)
+    convicted_declaration = models.FileField(upload_to=user_directory_path)
+    minor_age_declaration = models.FileField(upload_to=user_directory_path)

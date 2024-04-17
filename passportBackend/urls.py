@@ -25,7 +25,21 @@ from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
 from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 from polls.viewsAll.v6_CityzensViewSet import CityzensViewSet
 from polls.viewsAll.v0_Google_Oauth2 import GoogleAuthRedirect, GoogleRedirectURIView
-
+from polls.viewsAll.fv0_passportApplications.v1_IssuancePassportViewSet import (
+    IssuancePassportViewSet,
+)
+from polls.viewsAll.fv0_passportApplications.v2_RenewalPassportViewSet import (
+    RenewalPassportViewSet,
+)
+from polls.viewsAll.fv0_passportApplications.v3_ReplacementPassportViewSet import (
+    ReplacementPassportViewSet,
+)
+from polls.viewsAll.fv0_passportApplications.v4_TheftOrLossPassportViewSet import (
+    TheftOrLossPassportViewSet,
+)
+from polls.viewsAll.fv0_passportApplications.v5_IssuanceMinorsPassportViewSet import (
+    IssuanceMinorsPassportViewSet,
+)
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="address")
@@ -34,6 +48,41 @@ router.register(r"departments", DepartmentViewSet, basename="departments")
 router.register(r"users", CustomUserViewSet, basename="users")
 router.register(r"employees", EmployeeViewSet, basename="employees")
 router.register(r"cityzens", CityzensViewSet, basename="cityzens")
+
+#
+# Applications PASSPORT
+#
+
+# Issuance Passport
+router.register(
+    r"issuance-passport", IssuancePassportViewSet, basename="issuance-passport"
+)
+
+# Renewal Passport
+router.register(
+    r"renewal-passport", RenewalPassportViewSet, basename="renewal-passport"
+)
+
+# Replacement Passport
+router.register(
+    r"replacement-passport",
+    ReplacementPassportViewSet,
+    basename="replacement-passport",
+)
+
+# Theft Or Loss Passport
+router.register(
+    r"theftOrLoss-passport",
+    TheftOrLossPassportViewSet,
+    basename="theftOrLoss-passport",
+)
+# Issuance Minors Passport
+router.register(
+    r"issuanceMinors-passport",
+    IssuanceMinorsPassportViewSet,
+    basename="issuanceMinors-passport",
+)
+
 
 urlpatterns = [
     path("admin/", admin.site.urls),

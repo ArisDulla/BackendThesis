@@ -1,7 +1,7 @@
 from rest_framework import permissions
 
 
-class IsAdminOrIsSelf(permissions.BasePermission):
+class IsStaffOrIsSelf(permissions.BasePermission):
     """
     Custom permission to allow access to admins or the object's owner only.
     """

@@ -10,3 +10,6 @@ polls/permissions/__pycache__/
 polls/testsAll/requestsToken/__pycache__/
 polls/signalsAll/__pycache__/
 polls/serializers/s0_djoser/__pycache__/
+polls/serializers/fs0_passportApplications/__pycache__/
+polls/viewsAll/fv0_passportApplications/__pycache__/
+uploads
