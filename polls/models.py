@@ -94,6 +94,10 @@ class PassportApplication(models.Model):
     applicant_photo = models.ImageField(upload_to=user_directory_path)
     payment_receipt = models.FileField(upload_to=user_directory_path)
 
+    departmentx = models.ForeignKey(
+        Department, on_delete=models.SET_NULL, null=True, blank=False
+    )
+
     status_choices = [
         ("pending", "Pending"),
         ("first_approval", "First Approval"),
@@ -116,6 +120,13 @@ class PassportApplication(models.Model):
         related_name="final_approvals",
         null=True,
         blank=True,
+    )
+    rejected_by = models.ForeignKey(
+        CustomUser,
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name="rejections",
     )
 
     submitted_at = models.DateTimeField(auto_now_add=True)

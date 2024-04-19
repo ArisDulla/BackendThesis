@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 class ReplacementPassportSerializer(serializers.ModelSerializer):
     class Meta:
         model = ReplacementPassportApplication
-        exclude = ["first_approval_by", "final_approval_by", "user"]
+        exclude = ["first_approval_by", "final_approval_by", "user", "rejected_by"]
         read_only_fields = ["status", "user"]
 
     def validate_old_passport_pdf(self, value):

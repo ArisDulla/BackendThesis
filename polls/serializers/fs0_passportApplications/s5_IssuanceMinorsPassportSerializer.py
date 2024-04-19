@@ -10,7 +10,7 @@ from django.core.exceptions import ValidationError
 class IssuanceMinorsPassportSerializer(serializers.ModelSerializer):
     class Meta:
         model = IssuanceMinorsPassportApplication
-        exclude = ["first_approval_by", "final_approval_by", "user"]
+        exclude = ["first_approval_by", "final_approval_by", "user", "rejected_by"]
         read_only_fields = ["status", "user"]
 
     def validate_minor_age_declaration(self, value):

@@ -7,7 +7,7 @@ from rest_framework.serializers import ValidationError
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
-from ..permissions.IsStaffOrIsSelf import IsStaffOrIsSelf
+from ..permissions.p4_isEmployeeOrIsSelf import IsEmployeeOrIsSelf
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
@@ -19,7 +19,7 @@ class CityzensViewSet(viewsets.ModelViewSet):
         # The process of creating a citizen is done through the Signal (user_activated) after successful user activation.
         #
         if self.action == "update":
-            permission_classes = [IsStaffOrIsSelf]
+            permission_classes = [IsEmployeeOrIsSelf]
 
         else:
             permission_classes = [IsAdminUser]

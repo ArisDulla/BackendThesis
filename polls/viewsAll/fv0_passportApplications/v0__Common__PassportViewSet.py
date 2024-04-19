@@ -1,7 +1,8 @@
-from ...permissions.IsStaffOrIsSelf import IsStaffOrIsSelf
-from ...permissions.IsStaff_YP01 import IsStaff_YP01
-from ...permissions.IsStaff_YP02 import IsStaff_YP02
-from ...permissions.IsStaff import IsStaff
+from ...permissions.p4_isEmployeeOrIsSelf import IsEmployeeOrIsSelf
+from ...permissions.p0_isEmployee_YP01 import IsEmployee_YP01
+from ...permissions.p1_isEmployee_YP02 import IsEmployee_YP02
+from ...permissions.p3_isEmployeeObject import IsEmployeeObject
+from ...permissions.p2_isEmployee import isEmployee
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -10,6 +11,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.http import FileResponse
+from django.core.paginator import Paginator
 
 
 #
@@ -35,25 +37,38 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
             "retrieve",
             "download_file",
         ]:
-            permission_classes = [IsStaffOrIsSelf]
+            permission_classes = [IsEmployeeOrIsSelf]
+
+        elif self.action in [
+            "list_employee",
+            "list_employee_offield",
+        ]:
+
+            permission_classes = [isEmployee]
 
         elif self.action == "first_approval_application":
-            permission_classes = [IsStaff_YP01]
+            permission_classes = [IsEmployee_YP01]
 
         elif self.action == "final_approval_application":
-            permission_classes = [IsStaff_YP02]
+            permission_classes = [IsEmployee_YP02]
 
         elif self.action == "rejected_application":
-            permission_classes = [IsStaff]
+            permission_classes = [IsEmployeeObject]
 
         else:
             permission_classes = [IsAdminUser]
 
         return [permission() for permission in permission_classes]
 
+    #
+    # CREATE
+    #
     def perform_create(self, serializer):
         serializer.save(user=self.request.user)
 
+    #
+    # Cancel Application
+    #
     @action(detail=True, methods=["post"])
     def cancel_application(self, request, pk=None):
 
@@ -65,7 +80,7 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
 
     # Override the update method
     #
-    # partial=True
+    #  UPDATE - partial=True
     #
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
@@ -74,35 +89,50 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data, status=200)
 
+    #
+    # First Approval Application
+    #
     @action(detail=True, methods=["post"])
     def first_approval_application(self, request, pk=None):
 
         instance = self.get_object()
         instance.status = "first_approval"
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=200)
-
-    @action(detail=True, methods=["post"])
-    def final_approval_application(self, request, pk=None):
-
-        instance = self.get_object()
-        instance.status = "final_approval"
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=200)
-
-    @action(detail=True, methods=["post"])
-    def rejected_application(self, request, pk=None):
-
-        instance = self.get_object()
-        instance.status = "rejected"
+        instance.first_approval_by = request.user
         instance.save()
         serializer = self.get_serializer(instance)
         return Response(serializer.data, status=200)
 
     #
-    # /api/replacement-passport/24/download-file/FIELD-NAME
+    # Final Approval Application
+    #
+    @action(detail=True, methods=["post"])
+    def final_approval_application(self, request, pk=None):
+
+        instance = self.get_object()
+        instance.status = "final_approval"
+        instance.final_approval_by = request.user
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=200)
+
+    #
+    # Rejected Application
+    #
+    @action(detail=True, methods=["post"])
+    def rejected_application(self, request, pk=None):
+
+        instance = self.get_object()
+        instance.status = "rejected"
+        instance.rejected_by = request.user
+        instance.save()
+        serializer = self.get_serializer(instance)
+        return Response(serializer.data, status=200)
+
+    #
+    #
+    # Download File
+    #
+    # /api/--------/24/download-file/FIELD-NAME
     #
     @action(
         detail=True,
@@ -127,3 +157,45 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
             return FileResponse(open(file_path, "rb"), as_attachment=True)
         except FileNotFoundError:
             return JsonResponse({"error": "File field not found"}, status=404)
+
+    #
+    # LIST of applications every department
+    #
+    # - /api/----/list-employee/
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="list-employee",
+        url_name="list_employee",
+    )
+    def list_employee(self, request, *args, **kwargs):
+
+        queryset = self.queryset.filter(
+            departmentx=request.user.employee.department.id
+        ).order_by("-submitted_at")
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data)
+
+    #
+    # LIST of applications status = FIELD-NAME
+    #
+    # - /api/----/list-employee-offield/FIELD-NAME
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_name="list-employee-offield",
+        url_path=r"list-employee-offield/(?P<nameoffield>\w+)",
+    )
+    def list_employee_offield(self, request, pk=None, nameoffield=None):
+
+        queryset = self.queryset.filter(
+            departmentx=request.user.employee.department.id, status=nameoffield
+        ).order_by("-submitted_at")
+
+        serializer = self.get_serializer(queryset, many=True)
+
+        return Response(serializer.data)

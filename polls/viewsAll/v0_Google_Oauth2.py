@@ -4,7 +4,7 @@ from django.views.generic.base import View
 from django.conf import settings
 from rest_framework import status
 from rest_framework.views import APIView
-from ..permissions.isNotAuthenticated import IsNotAuthenticated
+from ..permissions.p5_isNotAuthenticated import IsNotAuthenticated
 from ..processors.customUserProcessor import CustomUserProcessor
 from ..processors.citizensProcessor import CitizensProcessor
 from ..processors.googleOAuth2Processor import GoogleOAuth2Processor
