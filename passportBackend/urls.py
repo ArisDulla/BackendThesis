@@ -24,7 +24,6 @@ from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
 from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
 from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 from polls.viewsAll.v6_CityzensViewSet import CityzensViewSet
-from polls.viewsAll.v0_Google_Oauth2 import GoogleAuthRedirect, GoogleRedirectURIView
 from polls.viewsAll.fv0_passportApplications.v1_IssuancePassportViewSet import (
     IssuancePassportViewSet,
 )
@@ -87,15 +86,7 @@ router.register(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    #
-    # Oauth2
-    #
-    re_path(r"^auth/", include("drf_social_oauth2.urls", namespace="drf")),
-    #
-    # Google Signup
-    #
-    path("google-login-signup/", GoogleAuthRedirect.as_view()),
-    path("google-redirect/", GoogleRedirectURIView.as_view(), name="google_redirect"),
+    
     #
     # Djoser and Simple JWT
     #
