@@ -86,11 +86,14 @@ router.register(
 urlpatterns = [
     path("admin/", admin.site.urls),
     path("api/", include(router.urls)),
-    
     #
     # Djoser and Simple JWT
     #
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),  # JWT’s
     path("auth/", include("djoser.urls.authtoken")),
+    #
+    # Social
+    #
+    path("auth/", include("djoser.social.urls")),
 ]
