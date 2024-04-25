@@ -236,3 +236,38 @@ class IssuanceMinorsPassportApplication(PassportApplication):
     caregiver_address_certification = models.FileField(upload_to=user_directory_path)
     convicted_declaration = models.FileField(upload_to=user_directory_path)
     minor_age_declaration = models.FileField(upload_to=user_directory_path)
+
+
+class Passport(models.Model):
+
+    STATUS_CHOICES = (
+        ("active", "Active"),
+        ("expired", "Expired"),
+        ("cancelled", "Cancelled"),
+    )
+
+    user = models.ForeignKey(CustomUser, on_delete=models.SET_NULL, null=True)
+
+    last_name = models.CharField(max_length=100)
+    first_name = models.CharField(max_length=100)
+
+    date_of_birth = models.DateField(null=False)
+    place_of_birth = models.CharField(max_length=100)
+    nationality = models.CharField(max_length=100)
+    gender = models.CharField(max_length=10)
+
+    passport_number = models.CharField(max_length=100, unique=True)
+
+    issuing_authority = models.ForeignKey(
+        Department, on_delete=models.SET_NULL, null=True
+    )
+
+    date_of_issue = models.DateField(null=False)
+    date_of_expiry = models.DateField(null=False)
+
+    passport_application = models.ForeignKey(
+        PassportApplication, on_delete=models.SET_NULL, null=True
+    )
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+
+    submitted_at = models.DateTimeField(auto_now_add=True)

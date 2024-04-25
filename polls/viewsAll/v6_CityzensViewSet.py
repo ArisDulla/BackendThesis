@@ -7,7 +7,9 @@ from rest_framework.serializers import ValidationError
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
-from ..permissions.p4_isEmployeeOrIsSelf import IsEmployeeOrIsSelf
+from ..permissions.p1_v0_CommonPassportViewPermissions.p4_isEmployeeOrIsSelf import (
+    IsEmployeeOrIsSelf,
+)
 
 
 class CityzensViewSet(viewsets.ModelViewSet):

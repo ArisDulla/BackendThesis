@@ -24,6 +24,7 @@ from polls.viewsAll.v3_DepartmentViewSet import DepartmentViewSet
 from polls.viewsAll.v4_CustomUserViewSet import CustomUserViewSet
 from polls.viewsAll.v5_EmployeeViewSet import EmployeeViewSet
 from polls.viewsAll.v6_CityzensViewSet import CityzensViewSet
+from polls.viewsAll.v7_PassportViewSet import PassportViewSet
 from polls.viewsAll.fv0_passportApplications.v1_IssuancePassportViewSet import (
     IssuancePassportViewSet,
 )
@@ -47,6 +48,7 @@ router.register(r"departments", DepartmentViewSet, basename="departments")
 router.register(r"users", CustomUserViewSet, basename="users")
 router.register(r"employees", EmployeeViewSet, basename="employees")
 router.register(r"cityzens", CityzensViewSet, basename="cityzens")
+router.register(r"passportInfo", PassportViewSet, basename="passportinfo")
 
 #
 # Applications PASSPORT

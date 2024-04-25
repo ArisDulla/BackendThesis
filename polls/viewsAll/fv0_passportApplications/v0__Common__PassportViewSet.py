@@ -1,8 +1,16 @@
-from ...permissions.p4_isEmployeeOrIsSelf import IsEmployeeOrIsSelf
-from ...permissions.p0_isEmployee_YP01 import IsEmployee_YP01
-from ...permissions.p1_isEmployee_YP02 import IsEmployee_YP02
-from ...permissions.p3_isEmployeeObject import IsEmployeeObject
-from ...permissions.p2_isEmployee import isEmployee
+from ...permissions.p1_v0_CommonPassportViewPermissions.p4_isEmployeeOrIsSelf import (
+    IsEmployeeOrIsSelf,
+)
+from ...permissions.p1_v0_CommonPassportViewPermissions.p0_isEmployee_YP01 import (
+    IsEmployee_YP01,
+)
+from ...permissions.p1_v0_CommonPassportViewPermissions.p1_isEmployee_YP02 import (
+    IsEmployee_YP02,
+)
+from ...permissions.p1_v0_CommonPassportViewPermissions.p3_isEmployeeObject import (
+    IsEmployeeObject,
+)
+from ...permissions.p1_v0_CommonPassportViewPermissions.p2_isEmployee import isEmployee
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response
@@ -11,7 +19,7 @@ from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from django.http import JsonResponse
 from django.http import FileResponse
-from django.core.paginator import Paginator
+from ...permissions.p1_isCitizen import IsCitizen
 
 
 #
@@ -30,6 +38,9 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
 
         if self.action == "create":
             permission_classes = [IsAuthenticated]
+
+        elif self.action == "list_citizen":
+            permission_classes = [IsCitizen]
 
         elif self.action in [
             "update",
@@ -198,4 +209,20 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
 
         serializer = self.get_serializer(queryset, many=True)
 
+        return Response(serializer.data)
+
+    #
+    # List for citizens
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="list-citizen",
+        url_name="list_citizen",
+    )
+    def list_citizen(self, request, *args, **kwargs):
+
+        queryset = self.queryset.filter(user=request.user).order_by("-submitted_at")
+
+        serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)

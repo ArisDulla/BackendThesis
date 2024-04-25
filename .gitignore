@@ -13,3 +13,5 @@ polls/serializers/s0_djoser/__pycache__/
 polls/serializers/fs0_passportApplications/__pycache__/
 polls/viewsAll/fv0_passportApplications/__pycache__/
 uploads
+polls/permissions/p2_v7_PassportViewPermissions/__pycache__/
+polls/permissions/p1_v0_CommonPassportViewPermissions/__pycache__/
