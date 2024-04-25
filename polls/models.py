@@ -262,7 +262,7 @@ class Passport(models.Model):
         Department, on_delete=models.SET_NULL, null=True
     )
 
-    date_of_issue = models.DateField(null=False)
+    date_of_issue = models.DateTimeField(auto_now_add=True)
     date_of_expiry = models.DateField(null=False)
 
     passport_application = models.ForeignKey(

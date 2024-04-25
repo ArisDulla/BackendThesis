@@ -17,6 +17,8 @@ from django.shortcuts import get_object_or_404
 from polls.models import PassportApplication
 from rest_framework.exceptions import PermissionDenied
 from ..permissions.p1_isCitizen import IsCitizen
+import random
+import string
 
 
 class PassportViewSet(viewsets.ModelViewSet):
@@ -57,11 +59,17 @@ class PassportViewSet(viewsets.ModelViewSet):
         employee = getattr(self.request.user, "employee", None)
 
         if departmentx == employee.department:
+            numbers = "".join(random.choices(string.digits, k=7))
+            words = "".join(random.choices(string.ascii_uppercase, k=4))
+            passport_number = f"{words}{numbers}"
             #
             # SAVE NEW PASSPORT
             #
             serializer.save(
-                status="active", user=userPass, issuing_authority=departmentx
+                status="active",
+                user=userPass,
+                issuing_authority=departmentx,
+                passport_number=passport_number,
             )
         else:
             raise PermissionDenied("You do not have permission to create Passport.")
