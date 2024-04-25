@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from ..models import Passport
 from django.utils import timezone
+import re
 
 
 class PassportSerializer(serializers.ModelSerializer):
@@ -22,13 +23,17 @@ class PassportSerializer(serializers.ModelSerializer):
         read_only_fields = ["user", "issuing_authority", "status", "passport_number"]
 
     def validate_last_name(self, value):
-        if not value:
-            raise serializers.ValidationError(("Last name is required."))
+        if not re.match(r"^[a-zA-Z\s]+$", value):
+            raise serializers.ValidationError(
+                "Last name must contain only English characters."
+            )
         return value
 
     def validate_first_name(self, value):
-        if not value:
-            raise serializers.ValidationError(("First name is required."))
+        if not re.match(r"^[a-zA-Z\s]+$", value):
+            raise serializers.ValidationError(
+                "First name must contain only English characters."
+            )
         return value
 
     def validate_date_of_birth(self, value):
