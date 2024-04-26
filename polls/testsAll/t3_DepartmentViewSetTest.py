@@ -76,7 +76,7 @@ class DepartmentViewSetTests(APITestCase):
             "street_number": "1",
             "region_name": "RWWWW",
             "prefecture_name": "RWWWWD",
-            "postal_code": "12345",
+            "postal_code": "9999",
         }
         number_data = {
             "number": "6988432999",
@@ -95,15 +95,11 @@ class DepartmentViewSetTests(APITestCase):
         departmentx = Department.objects.create(**department_data)
 
         address_data = {
-            "street": "3RWWWWAA",
-            "street_number": "1",
-            "region_name": "RWWWW",
-            "prefecture_name": "RWWWWD",
-            "postal_code": "12345",
+            "street": "KUJEREMALAKSAS",
         }
 
         number_data = {
-            "number": "6988432999",
+            "number": "6988432555",
             "status": "active",
         }
 
@@ -118,9 +114,16 @@ class DepartmentViewSetTests(APITestCase):
             f"/phoneNumber/{departmentx.id}/", updated_department_data, format="json"
         )
         force_authenticate(request, user=self.admin_user)
+
         response = self.view(request, pk=departmentx.id)
 
         # Assert response status code and address update
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         departmentx.refresh_from_db()
+        print(
+            departmentx.name, " 0000 ", departmentx.address.street, departmentx.address
+        )
+        print(departmentx.name, " 0000 ", departmentx.phone_number.number)
+        print(departmentx.name, " 0000 ", departmentx.phone_number.id)
+
         self.assertEqual(departmentx.name, "Test")

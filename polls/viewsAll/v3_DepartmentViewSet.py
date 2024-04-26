@@ -1,10 +1,9 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
-from ..models import Department, Address
+from ..models import Department
 from ..serializers.s3_DepartmentSerializer import DepartmentSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
-from ..processors.addressProcessor import AddressProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.addressAndPhone import AddressAndPhoneProcessor
 
@@ -15,7 +14,6 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     format_kwarg = None
     permission_classes = [IsAdminUser]
 
-
     def create(self, request, *args, **kwargs):
         """
         Create a new Department.
@@ -23,6 +21,9 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         _processor = AddressAndPhoneProcessor()
 
         try:
+            #
+            # CREATE ADDRESS AND PHONE NUMBER
+            #
             processed_data = _processor.process_creation_data(request.data)
         except ValidationError as e:
             raise e
@@ -38,13 +39,25 @@ class DepartmentViewSet(viewsets.ModelViewSet):
         """
         _processor = AddressAndPhoneProcessor()
 
+        instance = self.get_object()
         try:
-            processed_data = _processor.process_creation_data(request.data)
+            #
+            # UPDATE ADDRESS AND PHONE
+            #
+            _processor.process_update_data(request.data, instance)
         except ValidationError as e:
             raise e
 
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=processed_data)
+        processed_data = request.data
+        #
+        #  Remove IDs ADDRESS AND PHONE to exclude from update
+        #
+        fields_to_exclude = ["address", "phone_number"]
+        for field in fields_to_exclude:
+            if field in request.data:
+                processed_data.pop(field, None)
+
+        serializer = self.get_serializer(instance, data=processed_data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)

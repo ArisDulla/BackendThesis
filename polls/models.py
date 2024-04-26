@@ -43,7 +43,7 @@ class Address(models.Model):
 
 
 class PhoneNumber(models.Model):
-    number = models.CharField(max_length=20, unique=True)
+    number = models.CharField(max_length=20)
     STATUS_CHOICES = [
         ("active", "Active"),
         ("inactive", "Inactive"),
