@@ -41,15 +41,6 @@ class Address(models.Model):
     prefecture_name = models.CharField(max_length=100)
     postal_code = models.CharField(max_length=20)
 
-    class Meta:
-        unique_together = [
-            "street",
-            "street_number",
-            "region_name",
-            "prefecture_name",
-            "postal_code",
-        ]
-
 
 class PhoneNumber(models.Model):
     number = models.CharField(max_length=20, unique=True)
@@ -104,6 +95,14 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         """Check if the user a member of staff."""
         # Simplest possible answer: All admins are staff
         return self.is_admin
+
+
+class UserAddress(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    address = models.ForeignKey(Address, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("user", "address"),)
 
 
 class Department(models.Model):
