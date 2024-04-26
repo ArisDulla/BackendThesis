@@ -16,3 +16,4 @@ uploads
 polls/permissions/p2_v7_PassportViewPermissions/__pycache__/
 polls/permissions/p1_v0_CommonPassportViewPermissions/__pycache__/
 polls/permissions/p3_v1_AddressViewPermissions/__pycache__/
+polls/permissions/p4_v2_PhoneNumberViewPermissions/__pycache__/

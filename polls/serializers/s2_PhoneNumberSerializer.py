@@ -6,6 +6,7 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
     class Meta:
         model = PhoneNumber
         fields = ["id", "number", "status"]
+        read_only_fields = ["status"]
 
     def validate_number(self, value):
         """

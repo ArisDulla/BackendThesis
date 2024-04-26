@@ -53,13 +53,8 @@ class PhoneNumber(models.Model):
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):
-    address = models.ForeignKey(
-        Address, on_delete=models.SET_NULL, null=True, blank=False
-    )
-    phone_number = models.ForeignKey(
-        PhoneNumber, on_delete=models.SET_NULL, null=True, blank=False
-    )
     """Custom user model representing user in the system."""
+
     email = models.EmailField(
         verbose_name="Email",
         max_length=255,
@@ -103,6 +98,14 @@ class UserAddress(models.Model):
 
     class Meta:
         unique_together = (("user", "address"),)
+
+
+class UserPhoneNumber(models.Model):
+    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE)
+    phoneNumber = models.ForeignKey(PhoneNumber, on_delete=models.CASCADE)
+
+    class Meta:
+        unique_together = (("user", "phoneNumber"),)
 
 
 class Department(models.Model):
