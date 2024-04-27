@@ -23,41 +23,21 @@ class EmployeeViewSetTest(TestCase):
             {"get": "list", "post": "create", "put": "update", "delete": "destroy"}
         )
 
-        self.address = Address.objects.create(
-            street="456ElmSt",
-            street_number="2",
-            region_name="Region",
-            prefecture_name="Prefecture",
-            postal_code="54321",
-        )
-
-        self.phoneNumber = PhoneNumber.objects.create(
-            number="6988433492",
-            status="active",
-        )
-
         self.user_data = {
             "username": "testuser",
             "password": "testpassword",
-            "email": "test@example.com",
+            "email": "test324234452@example.com",
             "first_name": "Test",
             "last_name": "User",
             "is_superuser": False,
-            "is_staff": False,
             "is_active": True,
-            "date_joined": "2024-02-29T00:00:00Z",
             "last_login": "2024-02-29T00:00:00Z",
             "groups": [],
             "user_permissions": [],
-            "address": self.address.id,
-            "phone_number": self.phoneNumber.id,
         }
 
-        self.address_instance = Address.objects.get(id=self.address.id)
-        self.phone_number_instance = PhoneNumber.objects.get(id=self.phoneNumber.id)
-
         self.admin_user = get_user_model().objects.create_superuser(
-            username="superuser", email="superuser@email.com", password="pass"
+            username="superuser", email="superuser54353@email.com", password="pass"
         )
 
         self.client = APIClient()  # Create APIClient instance
@@ -71,47 +51,25 @@ class EmployeeViewSetTest(TestCase):
         user = CustomUser.objects.create(
             username="testuser898",
             password="testpassword",
-            email="test@example.com",
+            email="test623423@example.com",
             first_name="Test",
             last_name="User",
             is_superuser=False,
-            is_staff=False,
             is_active=True,
-            date_joined="2024-02-29T00:00:00Z",
             last_login="2024-02-29T00:00:00Z",
-            address=self.address_instance,
-            phone_number=self.phone_number_instance,
         )
-        ######################################
-
-        address_data = {
-            "street": "3MNBAAAAA",
-            "street_number": "1",
-            "region_name": "RWWWW",
-            "prefecture_name": "RWWWW",
-            "postal_code": "12345",
-        }
-
-        number_data = {
-            "number": "6988432143",
-            "status": "active",
-        }
 
         user_data = {
             "username": "testuser898213",
             "password": "testpassword",
-            "email": "test@example.com",
+            "email": "test123123123@example.com",
             "first_name": "Test",
             "last_name": "User",
             "is_superuser": False,
-            "is_staff": False,
             "is_active": True,
-            "date_joined": "2024-02-29T00:00:00Z",
             "last_login": "2024-02-29T00:00:00Z",
             "groups": [],
             "user_permissions": [],
-            "address": address_data,
-            "phone_number": number_data,
         }
         #
         # CREATE department
@@ -137,7 +95,7 @@ class EmployeeViewSetTest(TestCase):
             "name": "Test Department",
             "address": address,
             "phone_number": phoneNumber,
-            "email": "test@example.com",
+            "email": "test435213134@example.com",
         }
         departmentx = Department.objects.create(**department_data)
 
@@ -154,6 +112,8 @@ class EmployeeViewSetTest(TestCase):
         force_authenticate(request, user=self.admin_user)
         response = self.view(request)
 
+        # print(response.data)
+
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(Employee.objects.last().employee_id, "1212")
 
@@ -167,16 +127,12 @@ class EmployeeViewSetTest(TestCase):
         user = CustomUser.objects.create(
             username="testuser898",
             password="testpassword",
-            email="test@example.com",
+            email="test5423214@example.com",
             first_name="Test",
             last_name="User",
             is_superuser=False,
-            is_staff=False,
             is_active=True,
-            date_joined="2024-02-29T00:00:00Z",
             last_login="2024-02-29T00:00:00Z",
-            address=self.address_instance,
-            phone_number=self.phone_number_instance,
         )
 
         address_data22 = {
@@ -198,7 +154,7 @@ class EmployeeViewSetTest(TestCase):
             "name": "Test Department",
             "address": address,
             "phone_number": phoneNumber,
-            "email": "test@example.com",
+            "email": "test6232452@example.com",
         }
         departmentx = Department.objects.create(**department_data)
 
@@ -219,34 +175,18 @@ class EmployeeViewSetTest(TestCase):
         # updated _user_data
         #
         #
-        address_data = {
-            "street": "athinas13",
-            "street_number": "12",
-            "region_name": "RWWWW",
-            "prefecture_name": "RWWWW",
-            "postal_code": "12345",
-        }
-
-        number_data = {
-            "number": "6988432143",
-            "status": "active",
-        }
 
         user_data = {
             "username": "arisdulla",
             "password": "testpassword",
-            "email": "it2194@hua.gr",
+            "email": "it219423423442@hua.gr",
             "first_name": "Test",
             "last_name": "User",
             "is_superuser": False,
-            "is_staff": False,
             "is_active": True,
-            "date_joined": "2024-02-29T00:00:00Z",
             "last_login": "2024-02-29T00:00:00Z",
             "groups": [],
             "user_permissions": [],
-            "address": address_data,
-            "phone_number": number_data,
         }
         updated_user_data = {
             "user": user_data,
@@ -267,6 +207,4 @@ class EmployeeViewSetTest(TestCase):
         existsEmployee.refresh_from_db()
 
         self.assertEqual(existsEmployee.user.username, "arisdulla")
-        self.assertEqual(existsEmployee.user.email, "it2194@hua.gr")
-        self.assertEqual(existsEmployee.user.address.street, "ATHINAS13")
-        self.assertEqual(existsEmployee.user.phone_number.number, "6988432143")
+        self.assertEqual(existsEmployee.user.email, "it219423423442@hua.gr")

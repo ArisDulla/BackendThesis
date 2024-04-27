@@ -7,7 +7,6 @@ class CustomUserProcessor:
     def _create_custom_user(self, custom_user_data):
 
         try:
-
             serializer = CustomUserSerializer(data=custom_user_data)
             # Check if the serializer is valid
             if serializer.is_valid():
@@ -29,7 +28,9 @@ class CustomUserProcessor:
 
         try:
 
-            serializer = CustomUserSerializer(instance, data=custom_user_data)
+            serializer = CustomUserSerializer(
+                instance, data=custom_user_data, partial=True
+            )
 
             # Check if the serializer is valid
             if serializer.is_valid():

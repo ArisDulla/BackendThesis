@@ -6,7 +6,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.serializers import ValidationError
-from ..processors.addressAndPhone import AddressAndPhoneProcessor
+import random
+import string
 
 
 class EmployeeViewSet(viewsets.ModelViewSet):
@@ -14,24 +15,24 @@ class EmployeeViewSet(viewsets.ModelViewSet):
     serializer_class = EmployeeSerializer
     permission_classes = [IsAdminUser]
 
+    def perform_create(self, serializer):
+
+        numbers = "".join(random.choices(string.digits, k=7))
+        words = "".join(random.choices(string.ascii_uppercase, k=5))
+        employee_id = f"{words}{numbers}"
+
+        serializer.save(employee_id=employee_id)
+
     def create(self, request, *args, **kwargs):
         """
         Create a new Employee.
         """
-        #
-        # Processor DATA Address AND Phone
-        #
-        _addressAndPhoneProcessor = AddressAndPhoneProcessor()
-        try:
-            custom_user_data = _addressAndPhoneProcessor.process_creation_data(
-                request.data["user"]
-            )
-        except ValidationError as e:
-            raise e
 
+        custom_user_data = request.data["user"]
         #
         # Processor DATA Custom User
         #
+
         _customUserProcessor = CustomUserProcessor()
 
         try:
@@ -42,12 +43,14 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         request.data["user"] = user_array["user_id"]
 
         try:
+
             serializer = self.get_serializer(data=request.data)
             serializer.is_valid(raise_exception=True)
             self.perform_create(serializer)
 
         except Exception as e:
             user_array["instance"].delete()
+            raise e
 
         return Response(
             {"data": serializer.data},
@@ -58,23 +61,13 @@ class EmployeeViewSet(viewsets.ModelViewSet):
         """
         Update an existing Employee.
         """
-
         instance = self.get_object()
-        user_id = instance.user_id
 
         if "user" in request.data:
 
-            #
-            # Processor DATA Address AND Phone
-            #
-            _addressAndPhoneProcessor = AddressAndPhoneProcessor()
-            try:
-                custom_user_data = _addressAndPhoneProcessor.process_creation_data(
-                    request.data["user"]
-                )
-            except ValidationError as e:
-                raise e
+            user_id = instance.user.id
 
+            custom_user_data = request.data["user"]
             #
             # Processor DATA Custom User
             #
@@ -90,8 +83,7 @@ class EmployeeViewSet(viewsets.ModelViewSet):
 
             request.data["user"] = user_id
 
-        instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data)
+        serializer = self.get_serializer(instance, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data)

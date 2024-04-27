@@ -7,18 +7,31 @@ class CustomUserSerializer(serializers.ModelSerializer):
         model = CustomUser
         fields = [
             "id",
-            "password",
-            "last_login",
-            "is_superuser",
+            "email",
             "username",
             "first_name",
             "last_name",
-            "email",
-            "is_staff",
-            "is_active",
-            "date_joined",
-            "groups",
-            "user_permissions",
-            "address",
-            "phone_number",
+            "password",
         ]
+        read_only_fields = ["is_superuser", "is_staff", "is_active"]
+        extra_kwargs = {
+            "password": {"write_only": True},
+        }
+
+    def create(self, validated_data):
+        """
+        Override the create method to use CustomUserManager's create_user method.
+        """
+        user = CustomUser.objects.create_user(**validated_data)
+
+        return user
+
+    def update(self, instance, validated_data):
+
+        if "password" in validated_data:
+
+            instance.set_password(validated_data["password"])
+
+            del validated_data["password"]
+
+        return super().update(instance, validated_data)

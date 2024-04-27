@@ -129,7 +129,7 @@ class Employee(models.Model):
     department = models.ForeignKey(
         Department, on_delete=models.SET_NULL, null=True, blank=False
     )
-    employee_id = models.CharField(max_length=100)
+    employee_id = models.CharField(max_length=100, unique=True)
     employee_type = models.CharField(choices=EMPLOYEE_TYPES, null=True, blank=False)
 
 
