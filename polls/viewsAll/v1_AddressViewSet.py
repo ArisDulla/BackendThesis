@@ -5,7 +5,7 @@ from ..serializers.s1_AddressSerializer import AddressSerializer
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser
 from rest_framework.permissions import IsAuthenticated
-from ..permissions.p3_v1_AddressViewPermissions.p1_isAdminOrIsSelfAddress import (
+from ..permissions.p1_AddressPermissions.p1_isAdminOrIsSelfAddress import (
     IsAdminOrIsSelfAddress,
 )
 from rest_framework.permissions import IsAdminUser

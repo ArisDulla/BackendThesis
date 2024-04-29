@@ -2,31 +2,21 @@ from rest_framework import viewsets
 from ..models import Cityzens
 from ..serializers.s6_CityzensSerializer import CityzensSerializer
 from rest_framework.permissions import IsAdminUser
-from ..processors.addressAndPhone import AddressAndPhoneProcessor
 from rest_framework.serializers import ValidationError
 from ..processors.customUserProcessor import CustomUserProcessor
 from rest_framework.response import Response
 from rest_framework import status
-from ..permissions.p1_v0_CommonPassportViewPermissions.p4_isEmployeeOrIsSelf import (
-    IsEmployeeOrIsSelf,
-)
 
 
 class CityzensViewSet(viewsets.ModelViewSet):
     queryset = Cityzens.objects.all()
     serializer_class = CityzensSerializer
+    permission_classes = [IsAdminUser]
 
-    def get_permissions(self):
-        #
-        # The process of creating a citizen is done through the Signal (user_activated) after successful user activation.
-        #
-        if self.action == "update":
-            permission_classes = [IsEmployeeOrIsSelf]
-
-        else:
-            permission_classes = [IsAdminUser]
-
-        return [permission() for permission in permission_classes]
+    #
+    # DJOSER this endpoint to retrieve/update the authenticated user.
+    # URL: /users/me/ ,GET, PUT and PATCH
+    #
 
     #
     # The function create() is not used because
@@ -39,17 +29,8 @@ class CityzensViewSet(viewsets.ModelViewSet):
         """
         Create a new Cityzen.
         """
-        #
-        # Processor DATA Address AND Phone
-        #
-        _addressAndPhoneProcessor = AddressAndPhoneProcessor()
-        try:
-            custom_user_data = _addressAndPhoneProcessor.process_creation_data(
-                request.data["user"]
-            )
-        except ValidationError as e:
-            raise e
 
+        custom_user_data = request.data["user"]
         #
         # Processor DATA Custom User
         #
@@ -57,6 +38,7 @@ class CityzensViewSet(viewsets.ModelViewSet):
 
         try:
             user_array = _customUserProcessor._create_custom_user(custom_user_data)
+            
         except ValidationError as e:
             raise e
 
@@ -85,17 +67,7 @@ class CityzensViewSet(viewsets.ModelViewSet):
 
         if "user" in request.data:
 
-            #
-            # Processor DATA Address AND Phone
-            #
-            _addressAndPhoneProcessor = AddressAndPhoneProcessor()
-            try:
-                custom_user_data = _addressAndPhoneProcessor.process_creation_data(
-                    request.data["user"]
-                )
-            except ValidationError as e:
-                raise e
-
+            custom_user_data = request.data["user"]
             #
             # Processor DATA Custom User
             #

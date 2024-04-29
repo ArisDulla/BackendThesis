@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from ..models import PhoneNumber, UserPhoneNumber
 from ..serializers.s2_PhoneNumberSerializer import PhoneNumberSerializer
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from ..permissions.p4_v2_PhoneNumberViewPermissions.p1_isAdminOrIsSelfPhoneNumber import (
+from ..permissions.p2_PhoneNumberPermissions.p1_isAdminOrIsSelfPhoneNumber import (
     IsAdminOrIsSelfNumber,
 )
 

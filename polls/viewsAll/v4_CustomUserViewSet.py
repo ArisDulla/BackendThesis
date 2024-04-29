@@ -8,3 +8,9 @@ class CustomUserViewSet(viewsets.ModelViewSet):
     queryset = CustomUser.objects.all()
     serializer_class = CustomUserSerializer
     permission_classes = [IsAdminUser]
+
+    #
+    # DJOSER endpoint to retrieve/update the authenticated user.
+    # URL: /users/me/ ,GET, PUT and PATCH
+    #
+    

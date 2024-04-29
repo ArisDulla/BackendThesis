@@ -1,16 +1,16 @@
-from ...permissions.p1_v0_CommonPassportViewPermissions.p4_isEmployeeOrIsSelf import (
+from ...permissions.p0_CommonPassportPermissions.p4_isEmployeeOrIsSelf import (
     IsEmployeeOrIsSelf,
 )
-from ...permissions.p1_v0_CommonPassportViewPermissions.p0_isEmployee_YP01 import (
+from ...permissions.p0_CommonPassportPermissions.p0_isEmployee_YP01 import (
     IsEmployee_YP01,
 )
-from ...permissions.p1_v0_CommonPassportViewPermissions.p1_isEmployee_YP02 import (
+from ...permissions.p0_CommonPassportPermissions.p1_isEmployee_YP02 import (
     IsEmployee_YP02,
 )
-from ...permissions.p1_v0_CommonPassportViewPermissions.p3_isEmployeeObject import (
+from ...permissions.p0_CommonPassportPermissions.p3_isEmployeeObject import (
     IsEmployeeObject,
 )
-from ...permissions.p1_v0_CommonPassportViewPermissions.p2_isEmployee import isEmployee
+from ...permissions.p0_CommonPassportPermissions.p2_isEmployee import isEmployee
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.decorators import action
 from rest_framework.response import Response

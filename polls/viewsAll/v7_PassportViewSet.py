@@ -4,13 +4,13 @@ from ..serializers.s7_PassportSerializer import PassportSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
 from rest_framework.response import Response
-from ..permissions.p2_v7_PassportViewPermissions.p1_isEmployeeObjectPassport import (
+from ..permissions.p7_PassportPermissions.p1_isEmployeeObjectPassport import (
     IsEmployeeObjectPassport,
 )
-from ..permissions.p2_v7_PassportViewPermissions.p2_isEmployeeOrIsSelfPassport import (
+from ..permissions.p7_PassportPermissions.p2_isEmployeeOrIsSelfPassport import (
     IsEmployeeOrIsSelfPassport,
 )
-from ..permissions.p2_v7_PassportViewPermissions.p3_isEmployeePassport import (
+from ..permissions.p7_PassportPermissions.p3_isEmployeePassport import (
     IsEmployeePassport,
 )
 from django.shortcuts import get_object_or_404
