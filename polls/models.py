@@ -57,7 +57,7 @@ class PhoneNumber(models.Model):
         ("inactive", "Inactive"),
         ("not_exist", "Not Exist"),
     ]
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="active")
 
 
 class CustomUser(AbstractBaseUser, PermissionsMixin):

@@ -9,6 +9,9 @@ from rest_framework.test import APIClient
 from django.contrib.auth import get_user_model
 
 
+#
+# python manage.py test polls.testsAll.t3_DepartmentViewSetTest
+#
 class DepartmentViewSetTests(APITestCase):
     def setUp(self):
         self.factory = APIRequestFactory()

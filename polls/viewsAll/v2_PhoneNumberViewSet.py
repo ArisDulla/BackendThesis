@@ -29,7 +29,7 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
     # Perform create
     #
     def perform_create(self, serializer):
-        phoneNumber = serializer.save(status="active")
+        phoneNumber = serializer.save()
         user = self.request.user
 
         UserPhoneNumber.objects.create(user=user, phoneNumber=phoneNumber)
