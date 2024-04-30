@@ -15,11 +15,14 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
+        first_name = extra_kwargs.get("first_name", "")
+        last_name = extra_kwargs.get("last_name", "")
+
         user = self.model(
             email=self.normalize_email(email),
             username=username,
-            first_name=extra_kwargs["first_name"],
-            last_name=extra_kwargs["last_name"],
+            first_name=first_name,
+            last_name=last_name,
         )
 
         user.set_password(password)
