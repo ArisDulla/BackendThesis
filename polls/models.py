@@ -15,7 +15,12 @@ class CustomUserManager(BaseUserManager):
         if not email:
             raise ValueError("Users must have an email address")
 
-        user = self.model(email=self.normalize_email(email), username=username)
+        user = self.model(
+            email=self.normalize_email(email),
+            username=username,
+            first_name=extra_kwargs["first_name"],
+            last_name=extra_kwargs["last_name"],
+        )
 
         user.set_password(password)
         user.save(using=self._db)
@@ -65,6 +70,8 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
     last_name = models.CharField(max_length=25)
     is_active = models.BooleanField(default=True)
     is_admin = models.BooleanField(default=False)
+
+    created = models.DateTimeField(auto_now_add=True)
 
     objects = CustomUserManager()
 
@@ -135,6 +142,9 @@ class Employee(models.Model):
 
 class Cityzens(models.Model):
     user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    department = models.ForeignKey(
+        Department, on_delete=models.SET_NULL, null=True, blank=False
+    )
 
 
 def user_directory_path(instance, filename):

@@ -12,6 +12,7 @@ class CustomUserSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "password",
+            "created",
         ]
         read_only_fields = ["is_superuser", "is_staff", "is_active"]
         extra_kwargs = {
