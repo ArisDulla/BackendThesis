@@ -19,8 +19,16 @@ class PassportSerializer(serializers.ModelSerializer):
             "date_of_expiry",
             "passport_application",
             "status",
+            "email_updated_expiry",
         ]
-        read_only_fields = ["user", "issuing_authority", "status", "passport_number"]
+        read_only_fields = [
+            "user",
+            "issuing_authority",
+            "status",
+            "passport_number",
+            "email_updated_expiry",
+            "date_of_expiry",
+        ]
 
     def validate_last_name(self, value):
         if not re.match(r"^[a-zA-Z\s]+$", value):

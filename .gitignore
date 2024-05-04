@@ -17,3 +17,6 @@ polls/permissions/p0_CommonPassportPermissions/__pycache__/
 polls/permissions/p1_AddressPermissions/__pycache__/
 polls/permissions/p2_PhoneNumberPermissions/__pycache__/
 polls/permissions/p6_CityzensPermissions/__pycache__/
+polls/scheduleTasksPassport/__pycache__/
+.celerybeat.service.swp
+celerybeat-schedule

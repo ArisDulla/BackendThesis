@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     # Social
     "social_django",
     "corsheaders",
+    "django_celery_beat",
 ]
 CORS_ALLOWED_ORIGINS = [config("CORS_ALLOWED_ORIGINS")]
 CORS_ALLOW_CREDENTIALS = True
@@ -91,7 +92,13 @@ ROOT_URLCONF = "passportBackend.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [],
+        "DIRS": [
+            os.path.join(
+                BASE_DIR,
+                "polls",
+                "templates",
+            )
+        ],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -167,8 +174,6 @@ STATIC_URL = "static/"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
-
-
 DJOSER = {
     "USERNAME_CHANGED_EMAIL_CONFIRMATION": True,
     "PASSWORD_CHANGED_EMAIL_CONFIRMATION": True,
@@ -242,3 +247,9 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainSlidingSerializer",
     "SLIDING_TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSlidingSerializer",
 }
+
+# Celery Configuration Options
+CELERY_TIMEZONE = "Europe/London"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_IMPORTS = ("polls.scheduleTasksPassport.t1_ExpiryNotification",)
