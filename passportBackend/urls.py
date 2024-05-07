@@ -40,6 +40,7 @@ from polls.viewsAll.fv0_passportApplications.v4_TheftOrLossPassportViewSet impor
 from polls.viewsAll.fv0_passportApplications.v5_IssuanceMinorsPassportViewSet import (
     IssuanceMinorsPassportViewSet,
 )
+from polls.views import LogoutAPIView
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="address")
@@ -98,4 +99,8 @@ urlpatterns = [
     # Social
     #
     path("auth/", include("djoser.social.urls")),
+    #
+    # Logout
+    #
+    path("logout/", LogoutAPIView.as_view(), name="logout"),
 ]
