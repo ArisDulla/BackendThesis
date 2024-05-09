@@ -9,6 +9,16 @@ class UserCreateSerializer(UserCreateSerializer):
         model = User
         fields = ("id", "email", "first_name", "last_name", "password", "username")
 
+    def update(self, instance, validated_data):
+
+        if "password" in validated_data:
+
+            instance.set_password(validated_data["password"])
+
+            del validated_data["password"]
+
+        return super().update(instance, validated_data)
+
     """
     #
     # CREATE +NEW CITYZEN ( Override the perform_create method )

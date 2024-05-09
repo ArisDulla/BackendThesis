@@ -49,3 +49,36 @@ class DepartmentViewSet(viewsets.ModelViewSet):
             ),
         }
         return Response(data)
+
+    #
+    #
+    # PUBLIC ACTION -- permission_classes = [ ]
+    #
+    @action(detail=False, methods=["get"], permission_classes=[])
+    def get_all(self, request):
+        queryset = self.get_queryset()
+        data = []
+        for instance in queryset:
+            user_data = {
+                "id": instance.id,
+                "name": instance.name,
+                "email": instance.email,
+                "street": instance.address.street if instance.address else None,
+                "street_number": (
+                    instance.address.street_number if instance.address else None
+                ),
+                "region_name": (
+                    instance.address.region_name if instance.address else None
+                ),
+                "prefecture_name": (
+                    instance.address.prefecture_name if instance.address else None
+                ),
+                "postal_code": (
+                    instance.address.postal_code if instance.address else None
+                ),
+                "phone_number": (
+                    instance.phone_number.number if instance.phone_number else None
+                ),
+            }
+            data.append(user_data)
+        return Response(data)
