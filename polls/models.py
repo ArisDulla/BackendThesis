@@ -18,15 +18,18 @@ class CustomUserManager(BaseUserManager):
         first_name = extra_kwargs.get("first_name", "")
         last_name = extra_kwargs.get("last_name", "")
 
-        user = self.model(
-            email=self.normalize_email(email),
-            username=username,
-            first_name=first_name,
-            last_name=last_name,
-        )
+        user = self.model.objects.filter(email=email).first()
+        if not user:
 
-        user.set_password(password)
-        user.save(using=self._db)
+            user = self.model(
+                email=self.normalize_email(email),
+                username=username,
+                first_name=first_name,
+                last_name=last_name,
+            )
+            user.set_password(password)
+            user.save(using=self._db)
+
         return user
 
     def create_superuser(self, email, username, password=None, **extra_kwargs):

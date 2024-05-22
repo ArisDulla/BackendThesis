@@ -25,15 +25,15 @@ def userActivated(sender, user, request, **kwargs):
 @receiver(post_save, sender=UserSocialAuth)
 def user_created_callback(sender, instance, created, **kwargs):
     if created:
-
-        length = 12
-        random_password = "".join(
-            random.choices(string.ascii_letters + string.digits, k=length)
-        )
         user = instance.user
+        if not Cityzens.objects.filter(user=user).exists():
+            length = 12
+            random_password = "".join(
+                random.choices(string.ascii_letters + string.digits, k=length)
+            )
 
-        # Set the random password for the user
-        user.set_password(random_password)
-        user.save()
+            # Set the random password for the user
+            user.set_password(random_password)
+            user.save()
 
-        Cityzens.objects.create(user=instance.user)
+            Cityzens.objects.create(user=instance.user)
