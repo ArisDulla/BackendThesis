@@ -25,25 +25,62 @@ class CustomUserViewSet(viewsets.ModelViewSet):
 
         user = request.user
         department_id = "NONE"
-        cityzen_id = "NONE"
+        user_id = "NONE"
+        department_name = "NONE"
+        type_user = "NONE"
+
         #
         #
         # FOR CITYZENS
         #
         if hasattr(user, "cityzens"):
+
+            type_user = "cityzens"
             cityzen = user.cityzens
 
-            department_id = user.cityzens.department_id
+            department_id = cityzen.department_id
 
-            cityzen_id = user.cityzens.id
+            user_id = cityzen.id
+
+            if department_id:
+
+                return Response(
+                    {
+                        "department_id": department_id,
+                        "user_id": user_id,
+                        "department_name": cityzen.department.name,
+                        "type_user": type_user,
+                    },
+                    status=200,
+                )
+        #
+        # FOR Employee
+        #
+        if hasattr(user, "employee"):
+
+            employee = user.employee
+
+            department_id = employee.department_id
+
+            user_id = employee.id
 
             if department_id:
                 return Response(
-                    {"department_id": department_id, "cityzen_id": cityzen_id},
+                    {
+                        "department_id": department_id,
+                        "user_id": user_id,
+                        "department_name": employee.department.name,
+                        "type_user": type_user,
+                    },
                     status=200,
                 )
 
-        # User does not have a cityzen profile
         return Response(
-            {"department_id": department_id, "cityzen_id": cityzen_id}, status=200
+            {
+                "department_id": department_id,
+                "user_id": user_id,
+                "department_name": department_name,
+                "type_user": type_user,
+            },
+            status=200,
         )
