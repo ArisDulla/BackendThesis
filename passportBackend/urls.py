@@ -40,6 +40,9 @@ from polls.viewsAll.fv0_passportApplications.v4_TheftOrLossPassportViewSet impor
 from polls.viewsAll.fv0_passportApplications.v5_IssuanceMinorsPassportViewSet import (
     IssuanceMinorsPassportViewSet,
 )
+from polls.viewsAll.fv0_passportApplications.v0__Common__PassportViewSet import (
+    CommonPassportViewSet,
+)
 from polls.views import LogoutAPIView
 
 router = DefaultRouter()
@@ -54,6 +57,7 @@ router.register(r"passportInfo", PassportViewSet, basename="passportinfo")
 #
 # Applications PASSPORT
 #
+router.register(r"issuance", CommonPassportViewSet, basename="issuance")
 
 # Issuance Passport
 router.register(

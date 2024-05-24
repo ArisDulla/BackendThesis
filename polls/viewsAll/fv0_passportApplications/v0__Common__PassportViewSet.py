@@ -20,6 +20,10 @@ from rest_framework.response import Response
 from django.http import JsonResponse
 from django.http import FileResponse
 from ...permissions.p1_isCitizen import IsCitizen
+from ...serializers.fs0_passportApplications.s0_PassportApplicationSerializer import (
+    PassportApplicationSerializer,
+)
+from ...models import PassportApplication
 
 
 #
@@ -32,6 +36,8 @@ from ...permissions.p1_isCitizen import IsCitizen
 # + IssuanceMinorsPassportViewSet
 #
 class CommonPassportViewSet(viewsets.ModelViewSet):
+    queryset = PassportApplication.objects.all()
+    serializer_class = PassportApplicationSerializer
     parser_classes = [MultiPartParser, FormParser]
 
     def get_permissions(self):
