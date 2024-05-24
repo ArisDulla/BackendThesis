@@ -175,7 +175,7 @@ class PassportApplication(models.Model):
         ("first_approval", "First Approval"),
         ("final_approval", "Final Approval"),
         ("rejected", "Rejected"),
-        ("cancelated", "Cancelated"),
+        ("canceled", "Canceled"),
     ]
     status = models.CharField(max_length=20, choices=status_choices, default="pending")
 
