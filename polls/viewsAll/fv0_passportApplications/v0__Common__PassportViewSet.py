@@ -24,6 +24,7 @@ from ...serializers.fs0_passportApplications.s0_PassportApplicationSerializer im
     PassportApplicationSerializer,
 )
 from ...models import PassportApplication
+from rest_framework.exceptions import ValidationError
 
 
 #
@@ -81,9 +82,40 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     # CREATE
     #
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        user = self.request.user
+        flag = 0
 
-    #
+        if hasattr(user, "employee"):
+            employee = user.employee
+
+            if employee.department:
+                departmentx = employee.department
+                serializer.save(user=user, departmentx=departmentx)
+            else:
+                flag = 1
+
+        elif hasattr(user, "cityzens"):
+            cityzen = user.cityzens
+
+            if cityzen.department:
+                departmentx = cityzen.department
+
+                serializer.save(user=user, departmentx=departmentx)
+            else:
+                flag = 1
+
+        else:
+            raise ValidationError({"Error": ["Oops! Something went wrong"]})
+
+        if flag == 1:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You are not assigned to any department. Please edit your profile."
+                    ]
+                }
+            )
+
     # Cancel Application
     #
     @action(detail=True, methods=["post"])

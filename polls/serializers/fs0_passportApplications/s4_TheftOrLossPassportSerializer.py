@@ -10,8 +10,14 @@ from django.core.exceptions import ValidationError
 class TheftOrLossPassportSerializer(serializers.ModelSerializer):
     class Meta:
         model = TheftOrLossPassportApplication
-        exclude = ["first_approval_by", "final_approval_by", "user", "rejected_by"]
-        read_only_fields = ["status", "user"]
+        exclude = [
+            "first_approval_by",
+            "final_approval_by",
+            "user",
+            "rejected_by",
+            "departmentx",
+        ]
+        read_only_fields = ["status", "user", "departmentx"]
 
     def validate_police_report(self, value):
         if value:

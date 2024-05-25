@@ -200,6 +200,25 @@ class PassportApplication(models.Model):
         blank=True,
         related_name="rejections",
     )
+    ISSUANCE = "Issuance"
+    RENEWAL = "Renewal"
+    REPLACEMENT = "Replacement"
+    THEFTORLOSS = "TheftOrLoss"
+    ISSUANCEMINORS = "IssuanceMinors"
+
+    APPLICATION_TYPE_CHOICES = [
+        (ISSUANCE, "Issuance Passport"),
+        (RENEWAL, "Renewal Passport"),
+        (REPLACEMENT, "Replacement Passport"),
+        (THEFTORLOSS, "TheftOrLoss Passport"),
+        (ISSUANCEMINORS, "IssuanceMinors Passport"),
+    ]
+
+    application_type = models.CharField(
+        max_length=30,
+        choices=APPLICATION_TYPE_CHOICES,
+        blank=True,
+    )
 
     submitted_at = models.DateTimeField(auto_now_add=True)
 
@@ -213,6 +232,10 @@ class IssuancePassportApplication(PassportApplication):
     #
     application_form = models.FileField(upload_to=user_directory_path)
 
+    def save(self, *args, **kwargs):
+        self.application_type = self.ISSUANCE
+        super().save(*args, **kwargs)
+
 
 #
 #  Renewal Passport
@@ -222,6 +245,10 @@ class RenewalPassportApplication(PassportApplication):
     # (( The same documents are submitted, as in case 1  Passport Application ))
     #
     old_passport_pdf = models.FileField(upload_to=user_directory_path)
+
+    def save(self, *args, **kwargs):
+        self.application_type = self.RENEWAL
+        super().save(*args, **kwargs)
 
 
 #
@@ -233,6 +260,10 @@ class ReplacementPassportApplication(PassportApplication):
     #
     old_passport_pdf = models.FileField(upload_to=user_directory_path)
 
+    def save(self, *args, **kwargs):
+        self.application_type = self.REPLACEMENT
+        super().save(*args, **kwargs)
+
 
 #
 # Theft Or Loss Passport
@@ -242,6 +273,10 @@ class TheftOrLossPassportApplication(PassportApplication):
     # (( The same documents are submitted, as in case 1  Passport Application ))
     #
     police_report = models.FileField(upload_to=user_directory_path)
+
+    def save(self, *args, **kwargs):
+        self.application_type = self.THEFTORLOSS
+        super().save(*args, **kwargs)
 
 
 #
@@ -254,6 +289,10 @@ class IssuanceMinorsPassportApplication(PassportApplication):
     caregiver_address_certification = models.FileField(upload_to=user_directory_path)
     convicted_declaration = models.FileField(upload_to=user_directory_path)
     minor_age_declaration = models.FileField(upload_to=user_directory_path)
+
+    def save(self, *args, **kwargs):
+        self.application_type = self.ISSUANCEMINORS
+        super().save(*args, **kwargs)
 
 
 class Passport(models.Model):

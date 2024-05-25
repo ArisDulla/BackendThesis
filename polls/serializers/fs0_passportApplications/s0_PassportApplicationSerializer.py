@@ -9,8 +9,14 @@ from django.core.exceptions import ValidationError
 class PassportApplicationSerializer(serializers.ModelSerializer):
     class Meta:
         model = PassportApplication
-        exclude = ["first_approval_by", "final_approval_by", "user", "rejected_by"]
-        read_only_fields = ["status", "user"]
+        exclude = [
+            "first_approval_by",
+            "final_approval_by",
+            "user",
+            "rejected_by",
+            "departmentx",
+        ]
+        read_only_fields = ["status", "user", "departmentx"]
 
     def validate_old_passport_pdf(self, value):
         if value:
