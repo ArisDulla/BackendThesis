@@ -50,3 +50,59 @@ class PassportApplicationSerializer(serializers.ModelSerializer):
             raise ValidationError(("The maximum file size allowed is 1 MB."))
 
         return value
+
+    def validate_application_form(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError("Only PDF files are allowed for Application form")
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Application form pdf file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_police_report(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError("Only PDF files are allowed for police report")
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Police report file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_minor_age_declaration(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError(
+                    "Only PDF files are allowed for minor age declaration"
+                )
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Minor age declaration file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_convicted_declaration(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError(
+                    "Only PDF files are allowed for convicted declaration"
+                )
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Convicted declaration file size too large. Max size allowed is 1 MB"
+                )
+        return value
+
+    def validate_caregiver_address_certification(self, value):
+        if value:
+            if not value.name.endswith(".pdf"):
+                raise ValidationError(
+                    "Only PDF files are allowed for caregiver address certification"
+                )
+            if value.size > 1024 * 1024:  # 1 MB
+                raise ValidationError(
+                    "Caregiver address certification file size too large. Max size allowed is 1 MB"
+                )
+        return value
