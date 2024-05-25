@@ -6,6 +6,8 @@ from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from ..permissions.p2_PhoneNumberPermissions.p1_isAdminOrIsSelfPhoneNumber import (
     IsAdminOrIsSelfNumber,
 )
+from rest_framework.decorators import action
+from rest_framework import status
 
 
 class PhoneNumberViewSet(viewsets.ModelViewSet):
@@ -17,7 +19,7 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
         if self.action == "create":
             permission_classes = [IsAuthenticated]
 
-        elif self.action in ["retrieve", "update", "destroy"]:
+        elif self.action in ["retrieve", "update", "destroy", "list_user"]:
             permission_classes = [IsAdminOrIsSelfNumber]
 
         else:
@@ -45,3 +47,25 @@ class PhoneNumberViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=200)
+
+    #
+    # List for citizens
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="list-user",
+        url_name="list_user",
+    )
+    def list_user(self, request, *args, **kwargs):
+
+        user = request.user
+        user_phone_numbers = UserPhoneNumber.objects.filter(user=user)
+        phone_numbers_data = [
+            {
+                "id": user_phone_number.phoneNumber.id,
+                "number": user_phone_number.phoneNumber.number,
+            }
+            for user_phone_number in user_phone_numbers
+        ]
+        return Response(phone_numbers_data, status=status.HTTP_200_OK)
