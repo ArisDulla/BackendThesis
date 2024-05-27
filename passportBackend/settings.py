@@ -85,6 +85,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
+    "polls.serializer.TokenStrategyMiddleware",
 ]
 
 ROOT_URLCONF = "passportBackend.urls"
@@ -182,7 +183,7 @@ DJOSER = {
     "ACTIVATION_URL": f'{config("ACTIVATION_URL")}/{{uid}}/{{token}}',
     "SEND_ACTIVATION_EMAIL": True,
     "SEND_CONFIRMATION_EMAIL": True,
-    "SOCIAL_AUTH_TOKEN_STRATEGY": "djoser.social.token.jwt.TokenStrategy",
+    "SOCIAL_AUTH_TOKEN_STRATEGY": "polls.serializer.TokenStrategyMiddleware",  #  and Middleware
     "SOCIAL_AUTH_ALLOWED_REDIRECT_URIS": config("SOCIAL_AUTH_ALLOWED_REDIRECT_URIS"),
     "SERIALIZERS": {
         "user_create": "polls.serializers.s0_djoser.d0_UserCreateSerializer.UserCreateSerializer",
@@ -240,7 +241,7 @@ SIMPLE_JWT = {
     "SLIDING_TOKEN_REFRESH_EXP_CLAIM": "refresh_exp",
     "SLIDING_TOKEN_LIFETIME": timedelta(minutes=5),
     "SLIDING_TOKEN_REFRESH_LIFETIME": timedelta(days=1),
-    "TOKEN_OBTAIN_SERIALIZER": "rest_framework_simplejwt.serializers.TokenObtainPairSerializer",
+    "TOKEN_OBTAIN_SERIALIZER": "polls.serializer.MyTokenObtainPairSerializer",
     "TOKEN_REFRESH_SERIALIZER": "rest_framework_simplejwt.serializers.TokenRefreshSerializer",
     "TOKEN_VERIFY_SERIALIZER": "rest_framework_simplejwt.serializers.TokenVerifySerializer",
     "TOKEN_BLACKLIST_SERIALIZER": "rest_framework_simplejwt.serializers.TokenBlacklistSerializer",
