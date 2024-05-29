@@ -124,10 +124,22 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     def cancel_application(self, request, pk=None):
 
         instance = self.get_object()
-        instance.status = "canceled"
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=200)
+
+        if instance.status == "pending":
+
+            instance.status = "canceled"
+            instance.save()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data, status=200)
+
+        else:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'pending'."
+                    ]
+                }
+            )
 
     # Override the update method
     #
@@ -135,10 +147,22 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     #
     def update(self, request, *args, **kwargs):
         instance = self.get_object()
-        serializer = self.get_serializer(instance, data=request.data, partial=True)
-        serializer.is_valid(raise_exception=True)
-        self.perform_update(serializer)
-        return Response(serializer.data, status=200)
+
+        if instance.status == "pending":
+
+            serializer = self.get_serializer(instance, data=request.data, partial=True)
+            serializer.is_valid(raise_exception=True)
+            self.perform_update(serializer)
+            return Response(serializer.data, status=200)
+
+        else:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'pending'."
+                    ]
+                }
+            )
 
     #
     # First Approval Application
@@ -147,11 +171,22 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     def first_approval_application(self, request, pk=None):
 
         instance = self.get_object()
-        instance.status = "first_approval"
-        instance.first_approval_by = request.user
-        instance.save()
-        serializer = self.get_serializer(instance)
-        return Response(serializer.data, status=200)
+        if instance.status == "pending":
+
+            instance.status = "first_approval"
+            instance.first_approval_by = request.user
+            instance.save()
+            serializer = self.get_serializer(instance)
+            return Response(serializer.data, status=200)
+
+        else:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'pending'."
+                    ]
+                }
+            )
 
     #
     # Final Approval Application
@@ -160,10 +195,20 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     def final_approval_application(self, request, pk=None):
 
         instance = self.get_object()
-        instance.status = "final_approval"
-        instance.final_approval_by = request.user
-        instance.save()
-        serializer = self.get_serializer(instance)
+        if instance.status == "first_approval":
+            instance.status = "final_approval"
+            instance.final_approval_by = request.user
+            instance.save()
+            serializer = self.get_serializer(instance)
+        else:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'first_approval "
+                    ]
+                }
+            )
+
         return Response(serializer.data, status=200)
 
     #
@@ -173,10 +218,21 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     def rejected_application(self, request, pk=None):
 
         instance = self.get_object()
-        instance.status = "rejected"
-        instance.rejected_by = request.user
-        instance.save()
-        serializer = self.get_serializer(instance)
+        if instance.status == "first_approval" or instance.status == "pending":
+            instance.status = "rejected"
+            instance.rejected_by = request.user
+            instance.save()
+            serializer = self.get_serializer(instance)
+
+        else:
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'first_approval' OR 'pending' "
+                    ]
+                }
+            )
+
         return Response(serializer.data, status=200)
 
     #
