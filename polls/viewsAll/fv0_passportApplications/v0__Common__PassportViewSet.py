@@ -25,7 +25,8 @@ from ...serializers.fs0_passportApplications.s0_PassportApplicationSerializer im
 )
 from ...models import PassportApplication
 from rest_framework.exceptions import ValidationError
-from django.db.models import Q
+from django.db.models import Q, Case, When, IntegerField
+from django.contrib.auth import get_user_model
 
 
 #
@@ -90,9 +91,52 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
         if hasattr(user, "employee"):
             employee = user.employee
 
+            email = self.request.data.get("email")
+
             if employee.department:
-                departmentx = employee.department
-                serializer.save(user=user, departmentx=departmentx)
+
+                try:
+                    User = get_user_model()
+                    userCityzen = User.objects.get(email=email)
+
+                    if hasattr(userCityzen, "cityzens"):
+                        cityzen = userCityzen.cityzens
+
+                        if cityzen.department:
+                            departmentx = employee.department
+
+                            if cityzen.department == departmentx:
+                                serializer.save(
+                                    user=userCityzen, departmentx=departmentx
+                                )
+
+                            else:
+                                raise ValidationError(
+                                    {
+                                        "Notify": [
+                                            "The citizen's department does not match the employee's department."
+                                        ]
+                                    }
+                                )
+
+                        else:
+                            raise ValidationError(
+                                {
+                                    "Notify": [
+                                        "Cityzen is not assigned to any department."
+                                    ]
+                                }
+                            )
+                    else:
+                        raise ValidationError(
+                            {"Notify": ["The citizen does not exist."]}
+                        )
+
+                except User.DoesNotExist:
+                    raise ValidationError(
+                        {"Notify": ["User with the provided email does not exist."]}
+                    )
+
             else:
                 flag = 1
 
@@ -336,12 +380,24 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     )
     def list_employee_yp02(self, request, *args, **kwargs):
 
-        queryset = self.queryset.filter(
-            Q(status="first_approval")
-            | Q(status="final_approval")
-            | Q(status="rejected"),
-            departmentx=request.user.employee.department.id,
-        ).order_by("-submitted_at")
+        queryset = (
+            self.queryset.filter(
+                Q(status="first_approval")
+                | Q(status="final_approval")
+                | Q(status="rejected"),
+                departmentx=request.user.employee.department.id,
+            )
+            .annotate(
+                custom_order=Case(
+                    When(status="first_approval", then=0),
+                    When(status="final_approval", then=1),
+                    When(status="rejected", then=2),
+                    default=3,
+                    output_field=IntegerField(),
+                )
+            )
+            .order_by("custom_order", "-submitted_at")
+        )
 
         serializer = self.get_serializer(queryset, many=True)
 

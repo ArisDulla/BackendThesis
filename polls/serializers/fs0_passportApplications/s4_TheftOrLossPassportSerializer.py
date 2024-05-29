@@ -8,6 +8,8 @@ from django.core.exceptions import ValidationError
 #
 #
 class TheftOrLossPassportSerializer(serializers.ModelSerializer):
+    user_details = serializers.SerializerMethodField()
+
     class Meta:
         model = TheftOrLossPassportApplication
         exclude = [
@@ -18,6 +20,16 @@ class TheftOrLossPassportSerializer(serializers.ModelSerializer):
             "departmentx",
         ]
         read_only_fields = ["status", "user", "departmentx"]
+
+    def get_user_details(self, obj):
+
+        user = obj.user
+
+        return {
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
 
     def validate_police_report(self, value):
         if value:

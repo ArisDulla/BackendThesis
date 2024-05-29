@@ -8,6 +8,8 @@ from django.core.exceptions import ValidationError
 #
 #
 class IssuanceMinorsPassportSerializer(serializers.ModelSerializer):
+    user_details = serializers.SerializerMethodField()
+
     class Meta:
         model = IssuanceMinorsPassportApplication
         exclude = [
@@ -18,6 +20,16 @@ class IssuanceMinorsPassportSerializer(serializers.ModelSerializer):
             "departmentx",
         ]
         read_only_fields = ["status", "user", "departmentx"]
+
+    def get_user_details(self, obj):
+
+        user = obj.user
+
+        return {
+            "email": user.email,
+            "first_name": user.first_name,
+            "last_name": user.last_name,
+        }
 
     def validate_minor_age_declaration(self, value):
         if value:

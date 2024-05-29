@@ -11,7 +11,7 @@ class isEmployee(permissions.BasePermission):
         # Employee
         #
         if hasattr(user, "employee"):
-            if user.employee.employee_type in ["YP01", "YP02"]:
+            if user.employee.employee_type in ["YP01", "YP02", "SEC"]:
                 return True
 
         return False

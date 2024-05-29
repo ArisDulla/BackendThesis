@@ -109,7 +109,7 @@ def _get_role_user(user):
         cityzen = user.cityzens
         user_id = cityzen.id
 
-        if hasattr(cityzen, "department"):
+        if cityzen.department:
             department_name = cityzen.department.name
             department_id = cityzen.department.id
 
@@ -121,7 +121,7 @@ def _get_role_user(user):
         employee = user.employee
         user_id = employee.id
 
-        if hasattr(employee, "department"):
+        if employee.department:
             department_name = employee.department.name
             department_id = employee.department.id
 
