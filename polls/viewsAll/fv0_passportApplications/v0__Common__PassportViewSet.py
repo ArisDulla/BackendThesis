@@ -25,6 +25,7 @@ from ...serializers.fs0_passportApplications.s0_PassportApplicationSerializer im
 )
 from ...models import PassportApplication
 from rest_framework.exceptions import ValidationError
+from django.db.models import Q
 
 
 #
@@ -60,6 +61,7 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
         elif self.action in [
             "list_employee",
             "list_employee_offield",
+            "list_employee_yp02",
         ]:
 
             permission_classes = [isEmployee]
@@ -263,4 +265,28 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
         queryset = self.queryset.filter(user=request.user).order_by("-submitted_at")
 
         serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
+
+    #
+    # LIST of applications every department
+    #
+    # - /api/----/list-employee/
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_path="list-employee-yp02",
+        url_name="list_employee_yp02",
+    )
+    def list_employee_yp02(self, request, *args, **kwargs):
+
+        queryset = self.queryset.filter(
+            Q(status="first_approval")
+            | Q(status="final_approval")
+            | Q(status="rejected"),
+            departmentx=request.user.employee.department.id,
+        ).order_by("-submitted_at")
+
+        serializer = self.get_serializer(queryset, many=True)
+
         return Response(serializer.data)
