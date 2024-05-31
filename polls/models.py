@@ -322,7 +322,7 @@ class Passport(models.Model):
     date_of_issue = models.DateTimeField(auto_now_add=True)
     date_of_expiry = models.DateField(null=False)
 
-    passport_application = models.ForeignKey(
+    passport_application = models.OneToOneField(
         PassportApplication, on_delete=models.SET_NULL, null=True
     )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES)

@@ -15,10 +15,11 @@ from ..permissions.p7_PassportPermissions.p3_isEmployeePassport import (
 )
 from django.shortcuts import get_object_or_404
 from polls.models import PassportApplication
-from rest_framework.exceptions import PermissionDenied
 from ..permissions.p1_isCitizen import IsCitizen
 import random
 import string
+from rest_framework.exceptions import ValidationError
+from rest_framework import status
 
 
 class PassportViewSet(viewsets.ModelViewSet):
@@ -30,7 +31,7 @@ class PassportViewSet(viewsets.ModelViewSet):
         if self.action == "update":
             permission_classes = [IsEmployeeObjectPassport]
 
-        elif self.action == "retrieve":
+        elif self.action in ["retrieve", "get_passport"]:
             permission_classes = [IsEmployeeOrIsSelfPassport]
 
         elif self.action in ["list_employee", "create"]:
@@ -45,34 +46,76 @@ class PassportViewSet(viewsets.ModelViewSet):
         return [permission() for permission in permission_classes]
 
     #
-    # Perform Create
+    # Create
     #
-    def perform_create(self, serializer):
-
+    def _get_passport_application(self):
         passport_application_id = self.request.data.get("passport_application")
-        passport_application = get_object_or_404(
-            PassportApplication, pk=passport_application_id
-        )
+        return get_object_or_404(PassportApplication, pk=passport_application_id)
+
+    def create(self, request, *args, **kwargs):
+        passport_application = self._get_passport_application()
         departmentx = passport_application.departmentx
-        userPass = passport_application.user
 
         employee = getattr(self.request.user, "employee", None)
 
-        if departmentx == employee.department:
-            numbers = "".join(random.choices(string.digits, k=7))
-            words = "".join(random.choices(string.ascii_uppercase, k=4))
-            passport_number = f"{words}{numbers}"
-            #
-            # SAVE NEW PASSPORT
-            #
-            serializer.save(
-                status="active",
-                user=userPass,
-                issuing_authority=departmentx,
-                passport_number=passport_number,
+        if passport_application.status != "final_approval":
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "You can only perform this action when the status is 'final_approval'."
+                    ]
+                }
             )
-        else:
-            raise PermissionDenied("You do not have permission to create Passport.")
+
+        if departmentx != employee.department:
+
+            raise ValidationError(
+                {
+                    "Notify": [
+                        "The citizen's department does not match the employee's department."
+                    ]
+                }
+            )
+
+        serializer = self.get_serializer(data=request.data)
+
+        try:
+            serializer.is_valid(raise_exception=True)
+        except ValidationError as exc:
+            errors = serializer.errors
+            #
+            # when already exists passport (( OneToOneField ))
+            #
+            if "passport_application" in errors:
+                return Response(
+                    {"passport_application": errors["passport_application"]},
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+            else:
+                return Response(errors, status=status.HTTP_400_BAD_REQUEST)
+
+        self.perform_create(serializer)
+
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def perform_create(self, serializer):
+
+        passport_application = self._get_passport_application()
+        departmentx = passport_application.departmentx
+        userPass = passport_application.user
+
+        numbers = "".join(random.choices(string.digits, k=7))
+        words = "".join(random.choices(string.ascii_uppercase, k=4))
+        passport_number = f"{words}{numbers}"
+        #
+        # SAVE NEW PASSPORT
+        #
+        serializer.save(
+            status="active",
+            user=userPass,
+            issuing_authority=departmentx,
+            passport_number=passport_number,
+        )
 
     #
     # LIST of passports every department
@@ -122,3 +165,21 @@ class PassportViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
         return Response(serializer.data, status=200)
+
+    #
+    # Get Passport
+    #
+    @action(
+        detail=False,
+        methods=["get"],
+        url_name="get-passport",
+        url_path=r"get-passport/(?P<idApplication>\w+)",
+    )
+    def get_passport(self, request, pk=None, idApplication=None):
+
+        try:
+            passport = Passport.objects.get(passport_application=idApplication)
+            serializer = PassportSerializer(passport)
+            return Response(serializer.data)
+        except Passport.DoesNotExist:
+            return Response({"error": "Passport not found"}, status=404)

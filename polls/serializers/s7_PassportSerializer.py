@@ -8,6 +8,7 @@ class PassportSerializer(serializers.ModelSerializer):
     class Meta:
         model = Passport
         fields = [
+            "id",
             "last_name",
             "first_name",
             "date_of_birth",
@@ -27,7 +28,6 @@ class PassportSerializer(serializers.ModelSerializer):
             "status",
             "passport_number",
             "email_updated_expiry",
-            "date_of_expiry",
         ]
 
     def validate_last_name(self, value):
