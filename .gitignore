@@ -14,7 +14,7 @@ polls/viewsAll/fv0_passportApplications/__pycache__/
 uploads
 polls/permissions/p7_PassportPermissions/__pycache__/
 polls/permissions/p0_CommonPassportPermissions/__pycache__/
-polls/permissions/p1_AddressPermissions/__pycache__/
+polls/permissions/p8_UserAddressPermissions/__pycache__/
 polls/permissions/p2_PhoneNumberPermissions/__pycache__/
 polls/permissions/p6_CityzensPermissions/__pycache__/
 polls/scheduleTasksPassport/__pycache__/
