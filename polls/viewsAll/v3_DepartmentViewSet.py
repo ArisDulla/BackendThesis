@@ -4,6 +4,7 @@ from ..models import Department
 from ..serializers.s3_DepartmentSerializer import DepartmentSerializer
 from rest_framework.permissions import IsAdminUser
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 
 
 class DepartmentViewSet(viewsets.ModelViewSet):
@@ -11,6 +12,7 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     serializer_class = DepartmentSerializer
     format_kwarg = None
     permission_classes = [IsAdminUser]
+    pagination_class = PageNumberPagination
 
     #
     # Override the update method
@@ -29,56 +31,11 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     #
     # PUBLIC ACTION -- permission_classes = [ ]
     #
-    @action(detail=True, methods=["get"], permission_classes=[])
-    def get_specific_fields(self, request, pk=None):
-        instance = self.get_object()
-        data = {
-            "name": instance.name,
-            "email": instance.email,
-            "street": instance.address.street if instance.address else None,
-            "street_number": (
-                instance.address.street_number if instance.address else None
-            ),
-            "region_name": instance.address.region_name if instance.address else None,
-            "prefecture_name": (
-                instance.address.prefecture_name if instance.address else None
-            ),
-            "postal_code": instance.address.postal_code if instance.address else None,
-            "phone_number": (
-                instance.phone_number.number if instance.phone_number else None
-            ),
-        }
-        return Response(data)
-
-    #
-    #
-    # PUBLIC ACTION -- permission_classes = [ ]
-    #
     @action(detail=False, methods=["get"], permission_classes=[])
     def get_all(self, request):
-        queryset = self.get_queryset()
-        data = []
-        for instance in queryset:
-            user_data = {
-                "id": instance.id,
-                "name": instance.name,
-                "email": instance.email,
-                "street": instance.address.street if instance.address else None,
-                "street_number": (
-                    instance.address.street_number if instance.address else None
-                ),
-                "region_name": (
-                    instance.address.region_name if instance.address else None
-                ),
-                "prefecture_name": (
-                    instance.address.prefecture_name if instance.address else None
-                ),
-                "postal_code": (
-                    instance.address.postal_code if instance.address else None
-                ),
-                "phone_number": (
-                    instance.phone_number.number if instance.phone_number else None
-                ),
-            }
-            data.append(user_data)
-        return Response(data)
+        paginator = self.pagination_class()
+        queryset = self.filter_queryset(self.get_queryset())
+        page = paginator.paginate_queryset(queryset, request)
+
+        serializer = self.get_serializer(page, many=True)
+        return paginator.get_paginated_response(serializer.data)

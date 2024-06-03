@@ -58,6 +58,8 @@ CORS_ALLOWED_ORIGINS = [config("CORS_ALLOWED_ORIGINS")]
 CORS_ALLOW_CREDENTIALS = True
 
 REST_FRAMEWORK = {
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 4,
     # Use Django's standard `django.contrib.auth` permissions,
     # or allow read-only access for unauthenticated users.
     "DEFAULT_PERMISSION_CLASSES": [

@@ -34,11 +34,15 @@ class AddressSerializer(serializers.ModelSerializer):
         instance.street_number = validated_data.get(
             "street_number", instance.street_number
         ).upper()
-        instance.region_name = validated_data.get("region_name", instance.region_name).upper()
+        instance.region_name = validated_data.get(
+            "region_name", instance.region_name
+        ).upper()
         instance.prefecture_name = validated_data.get(
             "prefecture_name", instance.prefecture_name
         ).upper()
-        instance.postal_code = validated_data.get("postal_code", instance.postal_code).upper()
+        instance.postal_code = validated_data.get(
+            "postal_code", instance.postal_code
+        ).upper()
         instance.save()
         return instance
 
@@ -124,3 +128,7 @@ class AddressSerializer(serializers.ModelSerializer):
             )
 
         return value
+
+    def to_representation(self, instance):
+        if instance:
+            return str(instance)
