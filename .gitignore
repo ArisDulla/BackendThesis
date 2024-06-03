@@ -20,3 +20,4 @@ polls/permissions/p6_CityzensPermissions/__pycache__/
 polls/scheduleTasksPassport/__pycache__/
 .celerybeat.service.swp
 celerybeat-schedule
+polls/adminAll/__pycache__/
