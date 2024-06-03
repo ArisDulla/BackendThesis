@@ -21,7 +21,3 @@ class PhoneNumberSerializer(serializers.ModelSerializer):
                 "Phone number must have exactly 10 digits."
             )
         return value
-
-    def to_representation(self, instance):
-        if instance:
-            return str(instance)

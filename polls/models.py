@@ -137,6 +137,9 @@ class Department(models.Model):
     )
     email = models.EmailField()
 
+    def __str__(self):
+        return self.name
+
 
 class Employee(models.Model):
     EMPLOYEE_TYPES = (

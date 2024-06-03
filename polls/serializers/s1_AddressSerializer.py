@@ -128,7 +128,3 @@ class AddressSerializer(serializers.ModelSerializer):
             )
 
         return value
-
-    def to_representation(self, instance):
-        if instance:
-            return str(instance)
