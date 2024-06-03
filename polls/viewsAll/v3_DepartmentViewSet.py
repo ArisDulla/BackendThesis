@@ -11,8 +11,15 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     queryset = Department.objects.all()
     serializer_class = DepartmentSerializer
     format_kwarg = None
-    permission_classes = [IsAdminUser]
     pagination_class = PageNumberPagination
+
+    def get_permissions(self):
+        if self.action in ["list", "get_all"]:
+            permission_classes = []
+        else:
+            permission_classes = [IsAdminUser]
+
+        return [permission() for permission in permission_classes]
 
     #
     # Override the update method
@@ -31,11 +38,8 @@ class DepartmentViewSet(viewsets.ModelViewSet):
     #
     # PUBLIC ACTION -- permission_classes = [ ]
     #
-    @action(detail=False, methods=["get"], permission_classes=[])
+    @action(detail=False, methods=["get"])
     def get_all(self, request):
-        paginator = self.pagination_class()
         queryset = self.filter_queryset(self.get_queryset())
-        page = paginator.paginate_queryset(queryset, request)
-
-        serializer = self.get_serializer(page, many=True)
-        return paginator.get_paginated_response(serializer.data)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)
