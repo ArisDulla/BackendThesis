@@ -1,21 +1,21 @@
 from rest_framework import viewsets
-from ..models import UserAddress, CustomUser
-from ..serializers.s8_UserAddressSerializer import UserAddressSerializer
+from ..models import CustomUser, UserPhoneNumber
+from ..serializers.s9_UserPhoneNumberSerializer import UserPhoneNumberSerializer
 from rest_framework.decorators import action
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, IsAdminUser
 from django.shortcuts import get_object_or_404
-from polls.permissions.p8_UserAddressPermissions.p1_IsEmployee import IsEmployee
-from polls.permissions.p8_UserAddressPermissions.p2_IsEmployeeDepartment import (
+from polls.permissions.p9_UserPhonePermissions.p1_IsEmployee import IsEmployee
+from polls.permissions.p9_UserPhonePermissions.p2_IsEmployeeDepartment import (
     IsEmployeeDepartment,
 )
 from rest_framework.exceptions import PermissionDenied
 from django.http import Http404
 
 
-class UserAddressViewSet(viewsets.ModelViewSet):
-    queryset = UserAddress.objects.all()
-    serializer_class = UserAddressSerializer
+class UserPhoneNumberViewSet(viewsets.ModelViewSet):
+    queryset = UserPhoneNumber.objects.all()
+    serializer_class = UserPhoneNumberSerializer
 
     def get_permissions(self):
         if self.action in ["create", "list_user"]:
@@ -82,6 +82,9 @@ class UserAddressViewSet(viewsets.ModelViewSet):
         self.perform_update(serializer)
         return Response(serializer.data, status=200)
 
+    #
+    # List for employee
+    #
     @action(
         detail=False,
         methods=["get"],
@@ -111,8 +114,8 @@ class UserAddressViewSet(viewsets.ModelViewSet):
             #
             if citizenDepartment == employeeDepartment:
 
-                user_addresses = self.queryset.filter(user=user)
-                serializer = self.get_serializer(user_addresses, many=True)
+                user_phoneNumber = self.queryset.filter(user=user)
+                serializer = self.get_serializer(user_phoneNumber, many=True)
                 return Response(serializer.data)
 
             else:
@@ -137,6 +140,6 @@ class UserAddressViewSet(viewsets.ModelViewSet):
 
         user = request.user
 
-        user_addresses = self.queryset.filter(user=user)
-        serializer = self.get_serializer(user_addresses, many=True)
+        user_phoneNumber = self.queryset.filter(user=user)
+        serializer = self.get_serializer(user_phoneNumber, many=True)
         return Response(serializer.data)

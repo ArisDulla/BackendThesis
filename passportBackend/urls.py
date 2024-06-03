@@ -44,6 +44,7 @@ from polls.viewsAll.fv0_passportApplications.v0__Common__PassportViewSet import 
     CommonPassportViewSet,
 )
 from polls.viewsAll.v8_UserAddressViewSet import UserAddressViewSet
+from polls.viewsAll.v9_UserPhoneNumberViewSet import UserPhoneNumberViewSet
 from polls.views import LogoutAPIView
 
 router = DefaultRouter()
@@ -54,7 +55,8 @@ router.register(r"users", CustomUserViewSet, basename="users")
 router.register(r"employees", EmployeeViewSet, basename="employees")
 router.register(r"cityzens", CityzensViewSet, basename="cityzens")
 router.register(r"passportInfo", PassportViewSet, basename="passportinfo")
-router.register(r"userAddress", UserAddressViewSet, basename="passportinfo")
+router.register(r"userAddress", UserAddressViewSet, basename="userAddress")
+router.register(r"userPhoneNumber", UserPhoneNumberViewSet, basename="userPhoneNumber")
 
 #
 # Applications PASSPORT
