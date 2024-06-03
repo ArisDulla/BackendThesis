@@ -25,7 +25,7 @@ from ...serializers.fs0_passportApplications.s0_PassportApplicationSerializer im
 )
 from ...models import PassportApplication
 from rest_framework.exceptions import ValidationError
-from django.db.models import Q, Case, When, IntegerField
+from django.db.models import Q
 from django.contrib.auth import get_user_model
 
 
@@ -380,24 +380,22 @@ class CommonPassportViewSet(viewsets.ModelViewSet):
     )
     def list_employee_yp02(self, request, *args, **kwargs):
 
-        queryset = (
-            self.queryset.filter(
-                Q(status="first_approval")
-                | Q(status="final_approval")
-                | Q(status="rejected"),
-                departmentx=request.user.employee.department.id,
-            )
-            .annotate(
-                custom_order=Case(
-                    When(status="first_approval", then=0),
-                    When(status="final_approval", then=1),
-                    When(status="rejected", then=2),
-                    default=3,
-                    output_field=IntegerField(),
-                )
-            )
-            .order_by("custom_order", "-submitted_at")
-        )
+        queryset = self.queryset.filter(
+            Q(status="first_approval")
+            | Q(status="final_approval")
+            | Q(status="rejected"),
+            departmentx=request.user.employee.department.id,
+        ).order_by("-submitted_at")
+
+        # .annotate(
+        #         custom_order=Case(
+        #             When(status="first_approval", then=0),
+        #             When(status="final_approval", then=1),
+        #             When(status="rejected", then=2),
+        #             default=3,
+        #             output_field=IntegerField(),
+        #         )
+        #     )
 
         serializer = self.get_serializer(queryset, many=True)
 
