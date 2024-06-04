@@ -11,4 +11,7 @@ from .adminAll import (
     ReplacementPassportAdmin,
     TheftOrLossPassportAdmin,
     IssuanceMinorsPassportAdmin,
+    PassportAdmin,
+    UserAddressAdmin,
+    UserPhoneNumberAdmin,
 )
