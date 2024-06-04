@@ -8,4 +8,7 @@ from .adminAll import (
     CityzensAdmin,
     PassportApplicationAdmin,
     RenewalPassportAdmin,
+    ReplacementPassportAdmin,
+    TheftOrLossPassportAdmin,
+    IssuanceMinorsPassportAdmin,
 )
