@@ -91,6 +91,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = "passportBackend.urls"
+STATIC_ROOT = "/var/www/passportBackend/static/"
 
 TEMPLATES = [
     {

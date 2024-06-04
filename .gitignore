@@ -21,3 +21,4 @@ polls/scheduleTasksPassport/__pycache__/
 .celerybeat.service.swp
 celerybeat-schedule
 polls/adminAll/__pycache__/
+static
