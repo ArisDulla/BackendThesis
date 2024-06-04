@@ -5,6 +5,9 @@ from rest_framework import status
 from .serializer import LogoutSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.exceptions import TokenError
+from django.http import FileResponse
+from django.contrib.admin.views.decorators import staff_member_required
+from django.conf import settings
 
 
 class LogoutAPIView(APIView):
@@ -25,3 +28,16 @@ class LogoutAPIView(APIView):
             return Response(status=status.HTTP_204_NO_CONTENT)
 
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+#
+# Download Files for ADMIN PAGE BACKEND
+#
+@staff_member_required
+def download_file(request, fileName, user):
+
+    media = settings.MEDIA_ROOT
+
+    file_path = media + "/" + user + "/" + fileName
+
+    return FileResponse(open(file_path, "rb"), as_attachment=True)

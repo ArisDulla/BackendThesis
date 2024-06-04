@@ -6,4 +6,5 @@ from .adminAll import (
     AddressAdmin,
     PhoneNumberAdmin,
     CityzensAdmin,
+    PassportApplicationAdmin,
 )

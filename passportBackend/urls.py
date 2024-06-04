@@ -46,6 +46,7 @@ from polls.viewsAll.fv0_passportApplications.v0__Common__PassportViewSet import 
 from polls.viewsAll.v8_UserAddressViewSet import UserAddressViewSet
 from polls.viewsAll.v9_UserPhoneNumberViewSet import UserPhoneNumberViewSet
 from polls.views import LogoutAPIView
+from polls import views
 
 router = DefaultRouter()
 router.register(r"address", AddressViewSet, basename="address")
@@ -111,4 +112,13 @@ urlpatterns = [
     # Logout
     #
     path("logout/", LogoutAPIView.as_view(), name="logout"),
+    #
+    #
+    # Download Files for ADMIN PAGE BACKEND
+    #
+    path(
+        "adm2in2/applabel/modelname/download-file/<str:fileName>/<str:user>",
+        views.download_file,
+        name="admin_applabel_modelname_download_file",
+    ),
 ]
