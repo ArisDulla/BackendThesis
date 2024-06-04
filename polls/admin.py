@@ -7,4 +7,5 @@ from .adminAll import (
     PhoneNumberAdmin,
     CityzensAdmin,
     PassportApplicationAdmin,
+    RenewalPassportAdmin,
 )
