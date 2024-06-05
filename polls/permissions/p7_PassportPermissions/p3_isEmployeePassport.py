@@ -12,7 +12,7 @@ class IsEmployeePassport(permissions.BasePermission):
         #
         if hasattr(user, "employee"):
 
-            if user.employee.employee_type == "YP02":
+            if user.employee.employee_type in ["YP01", "YP02"]:
                 return True
 
         return False
