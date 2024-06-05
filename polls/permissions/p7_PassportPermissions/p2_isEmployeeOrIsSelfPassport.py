@@ -20,7 +20,7 @@ class IsEmployeeOrIsSelfPassport(permissions.BasePermission):
 
             if employee.department == obj.issuing_authority:
 
-                if employee.employee_type in ["YP02"]:
+                if employee.employee_type in ["YP01", "YP02"]:
                     return True
 
         #

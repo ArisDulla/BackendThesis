@@ -13,6 +13,9 @@ from ..permissions.p7_PassportPermissions.p2_isEmployeeOrIsSelfPassport import (
 from ..permissions.p7_PassportPermissions.p3_isEmployeePassport import (
     IsEmployeePassport,
 )
+from ..permissions.p7_PassportPermissions.p4_IsEmployeeYp2 import (
+    IsEmployeeYP2,
+)
 from django.shortcuts import get_object_or_404
 from polls.models import PassportApplication
 from ..permissions.p1_isCitizen import IsCitizen
@@ -34,8 +37,11 @@ class PassportViewSet(viewsets.ModelViewSet):
         elif self.action in ["retrieve", "get_passport"]:
             permission_classes = [IsEmployeeOrIsSelfPassport]
 
-        elif self.action in ["list_employee", "create"]:
+        elif self.action in ["list_employee"]:
             permission_classes = [IsEmployeePassport]
+
+        elif self.action == "create":
+            permission_classes = [IsEmployeeYP2]
 
         elif self.action == "list_citizen":
             permission_classes = [IsCitizen]

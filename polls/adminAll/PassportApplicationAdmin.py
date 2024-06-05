@@ -58,7 +58,6 @@ class PassportApplicationAdmin(admin.ModelAdmin):
                     "user",
                     "id_card_copy",
                     "id_card_copy_pdf",
-                    "applicant_photo_image_display",
                     "applicant_photo",
                     "applicant_photo_image",
                     "payment_receipt",
@@ -76,15 +75,11 @@ class PassportApplicationAdmin(admin.ModelAdmin):
         ),
     )
     readonly_fields = (
-        "applicant_photo_image_display",
         "id_card_copy_pdf",
         "applicant_photo_image",
         "payment_receipt_pdf",
         "application_form_pdf",
     )
-
-    def applicant_photo_image_display(self, instance):
-        return self.render_applicant_photo(instance.applicant_photo)
 
     def application_form_pdf(self, instance):
         return self.render_file_image(instance, instance.application_form)
@@ -118,17 +113,6 @@ class PassportApplicationAdmin(admin.ModelAdmin):
             )
         else:
             return ""
-
-    def render_applicant_photo(self, file_field):
-        if file_field:
-            img = Image.open(file_field)
-            img.thumbnail((200, 200))
-            buffered = BytesIO()
-            img.save(buffered, format="JPEG")
-            img_str = base64.b64encode(buffered.getvalue()).decode()
-            return mark_safe(f'<img src="data:image/jpeg;base64,{img_str}" />')
-        else:
-            return "No Image"
 
 
 admin.site.register(IssuancePassportApplication, PassportApplicationAdmin)
