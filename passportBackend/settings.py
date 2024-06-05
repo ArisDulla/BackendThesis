@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     "social_django",
     "corsheaders",
     "django_celery_beat",
+    "whitenoise.runserver_nostatic",
 ]
 CORS_ALLOWED_ORIGINS = [config("CORS_ALLOWED_ORIGINS")]
 CORS_ALLOW_CREDENTIALS = True
@@ -88,6 +89,7 @@ MIDDLEWARE = [
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "corsheaders.middleware.CorsMiddleware",
     "polls.serializer.TokenStrategyMiddleware",
+    "whitenoise.middleware.WhiteNoiseMiddleware",
 ]
 
 ROOT_URLCONF = "passportBackend.urls"
@@ -95,6 +97,9 @@ ROOT_URLCONF = "passportBackend.urls"
 STATIC_URL = "/static/"
 
 STATIC_ROOT = os.path.join(BASE_DIR, "static")
+
+STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+
 
 TEMPLATES = [
     {
